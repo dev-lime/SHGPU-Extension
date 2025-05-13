@@ -4,10 +4,6 @@ body {
 	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
 }
 
-#yui_3_17_2_1_1747138167610_216 {
-	display: none !important;
-}
-
 #back-to-top {
 	border-radius: 50% !important;
 	height: 50px !important;
@@ -16,8 +12,4 @@ body {
 
 .card dashboard-card {
 	border-radius: 16px !important;
-}
-
-.customimage {
-	display: none !important;
 }
