@@ -32,7 +32,10 @@ const TITLES_TO_REMOVE = [
 	"Календарь",
 	"Специальные возможности",
 	"Предстоящие события",
-	"Шкала времени"
+	"Шкала времени",
+	"Последние действия",
+	"Социальные мероприятия",
+	"Поиск по форумам"
 ];
 
 const cards = document.querySelectorAll('.card-body.p-3');
@@ -73,3 +76,31 @@ while (node = walker.nextNode()) {
 }
 
 console.log(`Произведено замен: ${replacementsCount}`);
+
+// Находим элемент, который нужно заменить
+const drawerToggle = document.querySelector('div[data-region="drawer-toggle"]');
+
+if (drawerToggle) {
+	// Создаём новую кнопку
+	const newButton = document.createElement('div');
+	newButton.className = 'd-inline-block mr-3';
+	newButton.innerHTML = `
+      <button type="button" class="btn nav-link float-sm-left mr-1 btn-primary" 
+              id="extension-button" title="SHGPU LMS">
+        <i class="icon fa fa-cube fa-fw" aria-hidden="true"></i>
+        <span class="sr-only">SHGPU LMS</span>
+      </button>
+    `;
+
+	// Заменяем старую кнопку на новую
+	drawerToggle.replaceWith(newButton);
+
+	// Добавляем обработчик клика
+	document.getElementById('extension-button').addEventListener('click', function () {
+		window.open('https://shgpu-lms.web.app', '_blank');
+	});
+
+	console.log('Кнопка расширения успешно добавлена');
+} else {
+	console.log('Элемент drawer-toggle не найден');
+}
