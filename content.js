@@ -80,9 +80,18 @@ function removeDrawerToggle() {
 	log(drawerToggle ? 'Кнопка успешно удалена' : 'Элемент drawer-toggle не найден');
 }
 
+function getCurrentSesskey() {
+	return document.querySelector('input[name="sesskey"]')?.value || '';
+}
+
 function rebuildHeader() {
 	const header = document.querySelector('#page-header .card');
 	if (!header) return;
+
+	const fpwonderbox = document.querySelector('.fpwonderbox');
+	fpwonderbox?.remove();
+
+	const sesskey = getCurrentSesskey();
 
 	header.innerHTML = `
     <div class="header-background"
@@ -97,25 +106,31 @@ function rebuildHeader() {
                 </a>
             </div>
 
-            <div class="header-controls">
-                <div class="user-actions">
-                    <a href="https://edu.shspu.ru/message/index.php?id=11707" class="btn-message">
-                        <i class="icon-message"></i>
-                        <span>Сообщение</span>
-                    </a>
-                    <button id="extension-button" class="btn-extension">
-                        <i class="icon-extension"></i>
-                        <span>Расширение</span>
+            <div class="quick-access-cards">
+                <a href="/grade/report/overview/index.php" class="access-card" title="Оценки">
+                    <div class="card-icon">
+                        <i class="fa fa-bar-chart"></i>
+                    </div>
+                    <span class="card-title">Оценки</span>
+                </a>
+                
+                <a href="https://shgpu-lms.web.app" class="access-card" title="SHGPU-LMS">
+                    <div class="card-icon">
+                        <i class="fa fa-cube"></i>
+                    </div>
+                    <span class="card-title">LMS</span>
+                </a>
+                
+                <form method="post" action="https://edu.shspu.ru/my/index.php" class="access-card-form">
+                    <input type="hidden" name="edit" value="1">
+                    <input type="hidden" name="sesskey" value="${sesskey}">
+                    <button type="submit" class="access-card" title="Настройки">
+                        <div class="card-icon">
+                            <i class="fa fa-cog"></i>
+                        </div>
+                        <span class="card-title">Настройки</span>
                     </button>
-                    <form method="post" action="https://edu.shspu.ru/my/index.php" class="page-settings">
-                        <input type="hidden" name="edit" value="1">
-                        <input type="hidden" name="sesskey" value="5geBWmB97W">
-                        <button type="submit" class="btn-settings">
-                            <i class="icon-settings"></i>
-                            <span>Настройки</span>
-                        </button>
-                    </form>
-                </div>
+                </form>
             </div>
         </div>
     </div>
@@ -132,6 +147,7 @@ function rebuildHeader() {
             opacity: 0.7;
             z-index: 0;
         }
+
         .header-content {
             position: relative;
             z-index: 1;
@@ -140,60 +156,78 @@ function rebuildHeader() {
             background: rgba(0, 0, 0, 0.5);
             border-radius: 10px;
         }
+
         .header-top {
             display: flex;
-            justify-content: flex-start;
             align-items: center;
+            gap: 30px;
         }
+
         .user-profile {
             display: flex;
             align-items: center;
-            gap: 15px;
         }
+
         .user-avatar {
             border-radius: 50%;
             overflow: hidden;
             border: 3px solid #fff;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
         }
-        .user-actions {
+
+        .quick-access-cards {
             display: flex;
-            gap: 10px;
-            margin-left: 15px;
+            gap: 15px;
+            flex-grow: 1;
         }
-        .btn-message,
-        .btn-extension,
-        .btn-settings {
+
+        .access-card,
+        .access-card-form button {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            gap: 5px;
-            padding: 8px 15px;
-            border-radius: 20px;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            height: 40px;
-            min-width: 120px;
+            justify-content: center;
+            width: 100px;
+            height: 100px;
             background: rgba(255, 255, 255, 0.15);
-            color: #fff;
+            backdrop-filter: blur(5px);
+            border-radius: 12px;
+            padding: 10px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+            font-size: inherit;
         }
-        .btn-message:hover,
-        .btn-extension:hover,
-        .btn-settings:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+
+        .access-card:hover,
+        .access-card-form button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
-        .icon-message:before { content: "💬"; }
-        .icon-extension:before { content: "🧩"; }
-        .icon-settings:before { content: "⚙️"; }
+
+        .card-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .card-title {
+            font-size: 14px;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .access-card-form {
+            display: contents;
+        }
     </style>
     `;
 
-	document.getElementById('extension-button')?.addEventListener('click', () => {
-		window.open('https://github.com/dev-lime/SHGPU-Extension', '_blank');
-	});
-
-	log('Шапка сайта успешно переверстана');
+	log('The site header has been successfully flipped');
 }
 
 // Инициализация
