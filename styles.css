@@ -1,83 +1,23 @@
-/* Основные изменения цвета */
 body {
 	background-color: #f5f5f5 !important;
 	color: #333 !important;
 	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
 }
 
-/* Шапка сайта */
-.navbar-fhs {
-	background-color: #2c3e50 !important;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1) !important;
+#yui_3_17_2_1_1747138167610_216 {
+	display: none !important;
 }
 
-.navbar-brand {
-	color: #ecf0f1 !important;
-	font-weight: bold !important;
+#back-to-top {
+	border-radius: 50% !important;
+	height: 50px !important;
+	width: 50px !important;
 }
 
-/* Карточки */
-.card {
-	border-radius: 8px !important;
-	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
-	border: none !important;
-	margin-bottom: 20px !important;
+.card dashboard-card {
+	border-radius: 16px !important;
 }
 
-.card-header {
-	background-color: #3498db !important;
-	color: white !important;
-	border-radius: 8px 8px 0 0 !important;
-}
-
-/* Кнопки */
-.btn-secondary {
-	background-color: #3498db !important;
-	border-color: #2980b9 !important;
-	color: white !important;
-}
-
-.btn-secondary:hover {
-	background-color: #2980b9 !important;
-}
-
-/* Навигационное меню */
-.block .card-title {
-	color: #2c3e50 !important;
-	font-size: 1.2rem !important;
-}
-
-/* Календарь */
-.minicalendar {
-	background-color: white !important;
-}
-
-.minicalendar th {
-	background-color: #3498db !important;
-	color: white !important;
-}
-
-/* Улучшение читаемости */
-#page-content {
-	padding: 20px !important;
-}
-
-/* Упрощение интерфейса */
-.fpwonderbox .btn {
-	margin: 5px !important;
-	padding: 10px 15px !important;
-	border-radius: 5px !important;
-}
-
-/* Темная тема (опционально) */
-@media (prefers-color-scheme: dark) {
-	body {
-		background-color: #121212 !important;
-		color: #e0e0e0 !important;
-	}
-
-	.card {
-		background-color: #1e1e1e !important;
-		color: #e0e0e0 !important;
-	}
+.customimage {
+	display: none !important;
 }
