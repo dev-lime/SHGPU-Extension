@@ -120,17 +120,6 @@ function rebuildHeader() {
                     </div>
                     <span class="card-title">LMS</span>
                 </a>
-                
-                <form method="post" action="https://edu.shspu.ru/my/index.php" class="access-card-form">
-                    <input type="hidden" name="edit" value="1">
-                    <input type="hidden" name="sesskey" value="${sesskey}">
-                    <button type="submit" class="access-card" title="Настройки">
-                        <div class="card-icon">
-                            <i class="fa fa-cog"></i>
-                        </div>
-                        <span class="card-title">Настройки</span>
-                    </button>
-                </form>
             </div>
         </div>
     </div>
@@ -153,7 +142,6 @@ function rebuildHeader() {
             z-index: 1;
             padding: 20px;
             color: #fff;
-            background: rgba(0, 0, 0, 0.5);
             border-radius: 10px;
         }
 
@@ -206,7 +194,6 @@ function rebuildHeader() {
         .access-card:hover,
         .access-card-form button:hover {
             background: rgba(255, 255, 255, 0.25);
-            transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         }
 
