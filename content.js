@@ -243,7 +243,7 @@ function createSearchModal(questionText) {
 	overlay.style.left = '0';
 	overlay.style.right = '0';
 	overlay.style.bottom = '0';
-	overlay.style.backgroundColor = 'rgba(0,0,0,0.5)';
+	overlay.style.backgroundColor = 'rgba(0,0,0,0.1)';
 	overlay.style.zIndex = '10000';
 	overlay.style.display = 'flex';
 	overlay.style.justifyContent = 'center';
@@ -263,43 +263,10 @@ function createSearchModal(questionText) {
 	modal.style.height = '80%';
 	modal.style.backgroundColor = 'white';
 	modal.style.borderRadius = '8px';
-	modal.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
+	modal.style.boxShadow = '0 4px 20px rgba(0,0,0,0.2)';
 	modal.style.display = 'flex';
 	modal.style.flexDirection = 'column';
 	modal.style.overflow = 'hidden';
-
-	// Заголовок окна
-	const header = document.createElement('div');
-	header.style.padding = '12px 16px';
-	header.style.backgroundColor = '#f5f5f5';
-	header.style.display = 'flex';
-	header.style.justifyContent = 'space-between';
-	header.style.alignItems = 'center';
-	header.style.borderBottom = '1px solid #ddd';
-
-	const title = document.createElement('span');
-	title.textContent = 'Поиск ответа';
-	title.style.fontWeight = 'bold';
-	header.appendChild(title);
-
-	const closeButton = document.createElement('button');
-	closeButton.textContent = '×';
-	closeButton.style.background = 'none';
-	closeButton.style.border = 'none';
-	closeButton.style.fontSize = '24px';
-	closeButton.style.cursor = 'pointer';
-	closeButton.style.padding = '0';
-	closeButton.style.width = '24px';
-	closeButton.style.height = '24px';
-	closeButton.style.display = 'flex';
-	closeButton.style.justifyContent = 'center';
-	closeButton.style.alignItems = 'center';
-	closeButton.addEventListener('click', () => {
-		document.body.removeChild(overlay);
-	});
-	header.appendChild(closeButton);
-
-	modal.appendChild(header);
 
 	// Контентная область
 	const content = document.createElement('div');
@@ -308,43 +275,6 @@ function createSearchModal(questionText) {
 	content.style.flexDirection = 'column';
 	content.style.overflow = 'hidden';
 
-	// Панель выбора режима
-	const modeSelector = document.createElement('div');
-	modeSelector.style.padding = '10px';
-	modeSelector.style.backgroundColor = '#f9f9f9';
-	modeSelector.style.borderBottom = '1px solid #eee';
-	modeSelector.style.display = 'flex';
-	modeSelector.style.gap = '8px';
-
-	// Кнопки для разных режимов
-	const createModeButton = (name, active = false) => {
-		const btn = document.createElement('button');
-		btn.textContent = name;
-		btn.style.padding = '6px 12px';
-		btn.style.border = '1px solid #ddd';
-		btn.style.borderRadius = '4px';
-		btn.style.cursor = 'pointer';
-		btn.style.backgroundColor = active ? '#e0e0e0' : 'transparent';
-		btn.style.transition = 'all 0.2s';
-		btn.addEventListener('mouseenter', () => {
-			if (!active) btn.style.backgroundColor = '#f0f0f0';
-		});
-		btn.addEventListener('mouseleave', () => {
-			if (!active) btn.style.backgroundColor = 'transparent';
-		});
-		return btn;
-	};
-
-	const aiButton = createModeButton('Нейросеть', true);
-	const googleButton = createModeButton('Google');
-	const yandexButton = createModeButton('Яндекс');
-	const bingButton = createModeButton('Bing');
-
-	modeSelector.appendChild(aiButton);
-	modeSelector.appendChild(googleButton);
-	modeSelector.appendChild(yandexButton);
-	modeSelector.appendChild(bingButton);
-
 	const contentArea = document.createElement('div');
 	contentArea.style.flex = '1';
 	contentArea.style.overflow = 'auto';
@@ -352,40 +282,6 @@ function createSearchModal(questionText) {
 
 	showAiResponse(questionText, contentArea);
 
-	// Обработчики переключения режимов
-	aiButton.addEventListener('click', () => {
-		aiButton.style.backgroundColor = '#e0e0e0';
-		googleButton.style.backgroundColor = 'transparent';
-		yandexButton.style.backgroundColor = 'transparent';
-		bingButton.style.backgroundColor = 'transparent';
-		showAiResponse(questionText, contentArea);
-	});
-
-	googleButton.addEventListener('click', () => {
-		aiButton.style.backgroundColor = 'transparent';
-		googleButton.style.backgroundColor = '#e0e0e0';
-		yandexButton.style.backgroundColor = 'transparent';
-		bingButton.style.backgroundColor = 'transparent';
-		showSearchFrame('https://www.google.com/search?q=', questionText, contentArea);
-	});
-
-	yandexButton.addEventListener('click', () => {
-		aiButton.style.backgroundColor = 'transparent';
-		googleButton.style.backgroundColor = 'transparent';
-		yandexButton.style.backgroundColor = '#e0e0e0';
-		bingButton.style.backgroundColor = 'transparent';
-		showSearchFrame('https://yandex.ru/search/?text=', questionText, contentArea);
-	});
-
-	bingButton.addEventListener('click', () => {
-		aiButton.style.backgroundColor = 'transparent';
-		googleButton.style.backgroundColor = 'transparent';
-		yandexButton.style.backgroundColor = 'transparent';
-		bingButton.style.backgroundColor = '#e0e0e0';
-		showSearchFrame('https://www.bing.com/search?q=', questionText, contentArea);
-	});
-
-	content.appendChild(modeSelector);
 	content.appendChild(contentArea);
 	modal.appendChild(content);
 	overlay.appendChild(modal);
@@ -394,12 +290,6 @@ function createSearchModal(questionText) {
 
 function showAiResponse(questionText, container) {
 	container.innerHTML = `
-        <div style="margin-bottom: 16px;">
-            <h3 style="margin-top: 0; color: #333;">Ваш вопрос:</h3>
-            <div style="background: #f5f5f5; padding: 12px; border-radius: 6px; margin-bottom: 16px;">
-                ${questionText.replace(/\n/g, '<br>')}
-            </div>
-        </div>
         <div style="display: flex; flex-direction: column; gap: 16px;">
             <div style="background: #e3f2fd; padding: 16px; border-radius: 6px;">
                 <h4 style="margin-top: 0; color: #0d47a1;">Ответ нейросети:</h4>
