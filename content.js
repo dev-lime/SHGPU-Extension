@@ -265,6 +265,12 @@ function addSearch() {
 			cursor: pointer;
 			transition: all 0.3s ease;
 			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			-webkit-touch-callout: none;
+			-webkit-user-select: none;
+			-khtml-user-select: none;
+			-moz-user-select: none;
+			-ms-user-select: none;
+			user-select: none;
 		`;
 
 		const hoverStyle = `
