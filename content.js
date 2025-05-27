@@ -20,7 +20,6 @@ const CONFIG = {
 // Утилиты
 const log = (...args) => CONFIG.DEBUG && console.log(...args);
 
-// Основные функции
 function removeNavItems() {
 	const navItems = document.querySelectorAll('.nav-item');
 	log(`Found ${navItems.length} nav items.`);
@@ -217,7 +216,6 @@ function rebuildHeader() {
 	log('The site header has been successfully flipped');
 }
 
-// Функция для получения полного текста вопроса с вариантами ответов
 function getFullQuestionText(questionElement) {
 	let fullText = '';
 
@@ -230,90 +228,328 @@ function getFullQuestionText(questionElement) {
 	// Варианты ответов
 	const answerElements = questionElement.querySelectorAll('.answer div.r0, .answer div.r1');
 	answerElements.forEach((answer, index) => {
-		const letter = String.fromCharCode(97 + index) + '.'; // a, b, c, d...
 		const answerText = answer.textContent.trim();
 		fullText += `${answerText}\n`;
-		//fullText += `${letter} ${answerText}\n`;
 	});
 
 	return fullText.trim();
+}
+
+function createSearchModal(questionText) {
+	// Оверлей
+	const overlay = document.createElement('div');
+	overlay.style.position = 'fixed';
+	overlay.style.top = '0';
+	overlay.style.left = '0';
+	overlay.style.right = '0';
+	overlay.style.bottom = '0';
+	overlay.style.backgroundColor = 'rgba(0,0,0,0.5)';
+	overlay.style.zIndex = '10000';
+	overlay.style.display = 'flex';
+	overlay.style.justifyContent = 'center';
+	overlay.style.alignItems = 'center';
+
+	// Закрытие при клике вне окна
+	overlay.addEventListener('click', (e) => {
+		if (e.target === overlay) {
+			document.body.removeChild(overlay);
+		}
+	});
+
+	// Окно
+	const modal = document.createElement('div');
+	modal.style.width = '80%';
+	modal.style.maxWidth = '900px';
+	modal.style.height = '80%';
+	modal.style.backgroundColor = 'white';
+	modal.style.borderRadius = '8px';
+	modal.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
+	modal.style.display = 'flex';
+	modal.style.flexDirection = 'column';
+	modal.style.overflow = 'hidden';
+
+	// Заголовок окна
+	const header = document.createElement('div');
+	header.style.padding = '12px 16px';
+	header.style.backgroundColor = '#f5f5f5';
+	header.style.display = 'flex';
+	header.style.justifyContent = 'space-between';
+	header.style.alignItems = 'center';
+	header.style.borderBottom = '1px solid #ddd';
+
+	const title = document.createElement('span');
+	title.textContent = 'Поиск ответа';
+	title.style.fontWeight = 'bold';
+	header.appendChild(title);
+
+	const closeButton = document.createElement('button');
+	closeButton.textContent = '×';
+	closeButton.style.background = 'none';
+	closeButton.style.border = 'none';
+	closeButton.style.fontSize = '24px';
+	closeButton.style.cursor = 'pointer';
+	closeButton.style.padding = '0';
+	closeButton.style.width = '24px';
+	closeButton.style.height = '24px';
+	closeButton.style.display = 'flex';
+	closeButton.style.justifyContent = 'center';
+	closeButton.style.alignItems = 'center';
+	closeButton.addEventListener('click', () => {
+		document.body.removeChild(overlay);
+	});
+	header.appendChild(closeButton);
+
+	modal.appendChild(header);
+
+	// Контентная область
+	const content = document.createElement('div');
+	content.style.flex = '1';
+	content.style.display = 'flex';
+	content.style.flexDirection = 'column';
+	content.style.overflow = 'hidden';
+
+	// Панель выбора режима
+	const modeSelector = document.createElement('div');
+	modeSelector.style.padding = '10px';
+	modeSelector.style.backgroundColor = '#f9f9f9';
+	modeSelector.style.borderBottom = '1px solid #eee';
+	modeSelector.style.display = 'flex';
+	modeSelector.style.gap = '8px';
+
+	// Кнопки для разных режимов
+	const createModeButton = (name, active = false) => {
+		const btn = document.createElement('button');
+		btn.textContent = name;
+		btn.style.padding = '6px 12px';
+		btn.style.border = '1px solid #ddd';
+		btn.style.borderRadius = '4px';
+		btn.style.cursor = 'pointer';
+		btn.style.backgroundColor = active ? '#e0e0e0' : 'transparent';
+		btn.style.transition = 'all 0.2s';
+		btn.addEventListener('mouseenter', () => {
+			if (!active) btn.style.backgroundColor = '#f0f0f0';
+		});
+		btn.addEventListener('mouseleave', () => {
+			if (!active) btn.style.backgroundColor = 'transparent';
+		});
+		return btn;
+	};
+
+	const aiButton = createModeButton('Нейросеть', true);
+	const googleButton = createModeButton('Google');
+	const yandexButton = createModeButton('Яндекс');
+	const bingButton = createModeButton('Bing');
+
+	modeSelector.appendChild(aiButton);
+	modeSelector.appendChild(googleButton);
+	modeSelector.appendChild(yandexButton);
+	modeSelector.appendChild(bingButton);
+
+	const contentArea = document.createElement('div');
+	contentArea.style.flex = '1';
+	contentArea.style.overflow = 'auto';
+	contentArea.style.padding = '16px';
+
+	showAiResponse(questionText, contentArea);
+
+	// Обработчики переключения режимов
+	aiButton.addEventListener('click', () => {
+		aiButton.style.backgroundColor = '#e0e0e0';
+		googleButton.style.backgroundColor = 'transparent';
+		yandexButton.style.backgroundColor = 'transparent';
+		bingButton.style.backgroundColor = 'transparent';
+		showAiResponse(questionText, contentArea);
+	});
+
+	googleButton.addEventListener('click', () => {
+		aiButton.style.backgroundColor = 'transparent';
+		googleButton.style.backgroundColor = '#e0e0e0';
+		yandexButton.style.backgroundColor = 'transparent';
+		bingButton.style.backgroundColor = 'transparent';
+		showSearchFrame('https://www.google.com/search?q=', questionText, contentArea);
+	});
+
+	yandexButton.addEventListener('click', () => {
+		aiButton.style.backgroundColor = 'transparent';
+		googleButton.style.backgroundColor = 'transparent';
+		yandexButton.style.backgroundColor = '#e0e0e0';
+		bingButton.style.backgroundColor = 'transparent';
+		showSearchFrame('https://yandex.ru/search/?text=', questionText, contentArea);
+	});
+
+	bingButton.addEventListener('click', () => {
+		aiButton.style.backgroundColor = 'transparent';
+		googleButton.style.backgroundColor = 'transparent';
+		yandexButton.style.backgroundColor = 'transparent';
+		bingButton.style.backgroundColor = '#e0e0e0';
+		showSearchFrame('https://www.bing.com/search?q=', questionText, contentArea);
+	});
+
+	content.appendChild(modeSelector);
+	content.appendChild(contentArea);
+	modal.appendChild(content);
+	overlay.appendChild(modal);
+	document.body.appendChild(overlay);
+
+	// Блокирует прокрутку страницы под модальным окном
+	document.body.style.overflow = 'hidden';
+	overlay.addEventListener('DOMNodeRemoved', () => {
+		document.body.style.overflow = '';
+	});
+}
+
+function showAiResponse(questionText, container) {
+	container.innerHTML = `
+        <div style="margin-bottom: 16px;">
+            <h3 style="margin-top: 0; color: #333;">Ваш вопрос:</h3>
+            <div style="background: #f5f5f5; padding: 12px; border-radius: 6px; margin-bottom: 16px;">
+                ${questionText.replace(/\n/g, '<br>')}
+            </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+            <div style="background: #e3f2fd; padding: 16px; border-radius: 6px;">
+                <h4 style="margin-top: 0; color: #0d47a1;">Ответ нейросети:</h4>
+                <div id="ai-response" style="line-height: 1.5;">
+                    <div style="display: flex; justify-content: center; padding: 20px;">
+                        <div class="spinner"></div>
+                    </div>
+                </div>
+            </div>
+            <div style="font-size: 12px; color: #666; text-align: center;">
+                Ответ генерируется с помощью AI. Для точного ответа проверьте поисковые системы.
+            </div>
+        </div>
+    `;
+
+	const spinnerStyle = document.createElement('style');
+	spinnerStyle.textContent = `
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    `;
+	container.appendChild(spinnerStyle);
+
+	// Имитирует работу нейросети (в реальности здесь должен быть API-запрос)
+	setTimeout(() => {
+		document.getElementById('ai-response').innerHTML = `
+            <p>На основании анализа вопроса, возможные ответы могут быть следующими:</p>
+            <ul style="margin-top: 8px; padding-left: 20px;">
+                ${questionText.split('\n').slice(1).filter(t => t.trim()).map(t => `<li>${t}</li>`).join('')}
+            </ul>
+            <p style="margin-top: 12px;">Это предположительный ответ. Для более точной информации рекомендуется проверить дополнительные источники.</p>
+        `;
+	}, 2000);
+}
+
+function showSearchFrame(url, questionText, container) {
+	container.innerHTML = `
+        <div style="height: 100%; display: flex; flex-direction: column;">
+            <div style="margin-bottom: 12px; font-size: 14px; color: #666;">
+                Поиск по запросу: <strong>${questionText.split('\n')[0]}</strong>
+            </div>
+            <iframe 
+                src="${url}${encodeURIComponent(questionText)}" 
+                style="flex: 1; border: none; border-radius: 4px;"
+                sandbox="allow-scripts allow-same-origin allow-popups"
+            ></iframe>
+            <div style="margin-top: 12px; font-size: 12px; color: #666; text-align: center;">
+                Некоторые поисковые системы могут запрещать встраивание. Если страница не загружается, используйте кнопку "Открыть в новой вкладке".
+            </div>
+        </div>
+    `;
 }
 
 function addSearch() {
 	const questions = document.querySelectorAll('.que.multichoice, .que.truefalse, .que.shortanswer, .que.essay');
 
 	questions.forEach(question => {
-		// Получаем полный текст вопроса с вариантами ответов
 		const questionText = getFullQuestionText(question);
 
-		// Создаем контейнер для кнопок
 		const buttonsContainer = document.createElement('div');
 		buttonsContainer.style.margin = '15px 0';
 		buttonsContainer.style.display = 'flex';
 		buttonsContainer.style.gap = '10px';
 		buttonsContainer.style.alignItems = 'center';
 
-		// Стиль для стеклянных кнопок
-		const glassButtonStyle = `
-			padding: 8px 16px;
-			background: rgba(255, 255, 255, 0.2);
-			backdrop-filter: blur(10px);
-			border: 1px solid rgba(255, 255, 255, 0.3);
-			border-radius: 8px;
-			color: #333;
-			font-size: 14px;
-			cursor: pointer;
-			transition: all 0.3s ease;
-			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-			-webkit-touch-callout: none;
-			-webkit-user-select: none;
-			-khtml-user-select: none;
-			-moz-user-select: none;
-			-ms-user-select: none;
-			user-select: none;
-		`;
+		// Стиль для кнопок
+		const buttonStyle = `
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            color: #333;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            user-select: none;
+        `;
 
 		const hoverStyle = `
-			background: rgba(255, 255, 255, 0.3);
-			transform: translateY(-1px);
-			box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-		`;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        `;
+
+		// Кнопка для открытия окна
+		const modalButton = document.createElement('button');
+		modalButton.textContent = 'ИИ-поиск ответа';
+		modalButton.style.cssText = buttonStyle;
+		modalButton.addEventListener('mouseenter', () => {
+			modalButton.style.cssText = buttonStyle + hoverStyle;
+		});
+		modalButton.addEventListener('mouseleave', () => {
+			modalButton.style.cssText = buttonStyle;
+		});
+		modalButton.addEventListener('click', (e) => {
+			e.preventDefault();
+			createSearchModal(questionText);
+		});
 
 		// Кнопка для поиска в Google
 		const googleButton = document.createElement('button');
-		googleButton.textContent = 'Поиск в Google';
-		googleButton.style.cssText = glassButtonStyle;
+		googleButton.textContent = 'Google';
+		googleButton.style.cssText = buttonStyle;
 		googleButton.addEventListener('mouseenter', () => {
-			googleButton.style.cssText = glassButtonStyle + hoverStyle;
+			googleButton.style.cssText = buttonStyle + hoverStyle;
 		});
 		googleButton.addEventListener('mouseleave', () => {
-			googleButton.style.cssText = glassButtonStyle;
+			googleButton.style.cssText = buttonStyle;
 		});
-		googleButton.addEventListener('click', () => {
-			const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(questionText)}`;
-			window.open(searchUrl, '_blank');
+		googleButton.addEventListener('click', (e) => {
+			e.preventDefault();
+			window.open(`https://www.google.com/search?q=${encodeURIComponent(questionText)}`, '_blank');
 		});
 
 		// Кнопка для поиска в Яндекс
 		const yandexButton = document.createElement('button');
-		yandexButton.textContent = 'Поиск в Яндекс';
-		yandexButton.style.cssText = glassButtonStyle;
+		yandexButton.textContent = 'Яндекс';
+		yandexButton.style.cssText = buttonStyle;
 		yandexButton.addEventListener('mouseenter', () => {
-			yandexButton.style.cssText = glassButtonStyle + hoverStyle;
+			yandexButton.style.cssText = buttonStyle + hoverStyle;
 		});
 		yandexButton.addEventListener('mouseleave', () => {
-			yandexButton.style.cssText = glassButtonStyle;
+			yandexButton.style.cssText = buttonStyle;
 		});
-		yandexButton.addEventListener('click', () => {
-			const searchUrl = `https://yandex.ru/search/?text=${encodeURIComponent(questionText)}`;
-			window.open(searchUrl, '_blank');
+		yandexButton.addEventListener('click', (e) => {
+			e.preventDefault();
+			window.open(`https://yandex.ru/search/?text=${encodeURIComponent(questionText)}`, '_blank');
 		});
 
-		// Добавляем кнопки в контейнер
+		buttonsContainer.appendChild(modalButton);
 		buttonsContainer.appendChild(googleButton);
 		buttonsContainer.appendChild(yandexButton);
 
-		// Вставляем контейнер с кнопками после блока с вопросом
 		const questionContent = question.querySelector('.content');
 		if (questionContent) {
 			questionContent.appendChild(buttonsContainer);
@@ -321,7 +557,6 @@ function addSearch() {
 	});
 }
 
-// Инициализация
 function init() {
 	log("Document is ready.");
 
@@ -333,10 +568,4 @@ function init() {
 	addSearch();
 }
 
-// Запуск
-/*if (document.readyState === 'complete') {
-	init();
-} else {
-	document.addEventListener('DOMContentLoaded', init);
-}*/
 init();
