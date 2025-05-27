@@ -390,12 +390,6 @@ function createSearchModal(questionText) {
 	modal.appendChild(content);
 	overlay.appendChild(modal);
 	document.body.appendChild(overlay);
-
-	// Блокирует прокрутку страницы под модальным окном
-	document.body.style.overflow = 'hidden';
-	overlay.addEventListener('DOMNodeRemoved', () => {
-		document.body.style.overflow = '';
-	});
 }
 
 function showAiResponse(questionText, container) {
@@ -416,7 +410,7 @@ function showAiResponse(questionText, container) {
                 </div>
             </div>
             <div style="font-size: 12px; color: #666; text-align: center;">
-                Ответ генерируется с помощью AI. Для точного ответа проверьте поисковые системы.
+                Ответ генерируется с помощью AI. Только для справки.
             </div>
         </div>
     `;
@@ -445,25 +439,18 @@ function showAiResponse(questionText, container) {
             <ul style="margin-top: 8px; padding-left: 20px;">
                 ${questionText.split('\n').slice(1).filter(t => t.trim()).map(t => `<li>${t}</li>`).join('')}
             </ul>
-            <p style="margin-top: 12px;">Это предположительный ответ. Для более точной информации рекомендуется проверить дополнительные источники.</p>
-        `;
+		`;
 	}, 2000);
 }
 
 function showSearchFrame(url, questionText, container) {
 	container.innerHTML = `
         <div style="height: 100%; display: flex; flex-direction: column;">
-            <div style="margin-bottom: 12px; font-size: 14px; color: #666;">
-                Поиск по запросу: <strong>${questionText.split('\n')[0]}</strong>
-            </div>
             <iframe 
                 src="${url}${encodeURIComponent(questionText)}" 
                 style="flex: 1; border: none; border-radius: 4px;"
                 sandbox="allow-scripts allow-same-origin allow-popups"
             ></iframe>
-            <div style="margin-top: 12px; font-size: 12px; color: #666; text-align: center;">
-                Некоторые поисковые системы могут запрещать встраивание. Если страница не загружается, используйте кнопку "Открыть в новой вкладке".
-            </div>
         </div>
     `;
 }
@@ -503,7 +490,7 @@ function addSearch() {
 
 		// Кнопка для открытия окна
 		const modalButton = document.createElement('button');
-		modalButton.textContent = 'ИИ-поиск ответа';
+		modalButton.textContent = 'AI';
 		modalButton.style.cssText = buttonStyle;
 		modalButton.addEventListener('mouseenter', () => {
 			modalButton.style.cssText = buttonStyle + hoverStyle;
