@@ -217,6 +217,104 @@ function rebuildHeader() {
 	log('The site header has been successfully flipped');
 }
 
+// Функция для получения полного текста вопроса с вариантами ответов
+function getFullQuestionText(questionElement) {
+	let fullText = '';
+
+	// Текст вопроса
+	const qtextElement = questionElement.querySelector('.qtext');
+	if (qtextElement) {
+		fullText += qtextElement.textContent.trim() + '\n';
+	}
+
+	// Варианты ответов
+	const answerElements = questionElement.querySelectorAll('.answer div.r0, .answer div.r1');
+	answerElements.forEach((answer, index) => {
+		const letter = String.fromCharCode(97 + index) + '.'; // a, b, c, d...
+		const answerText = answer.textContent.trim();
+		fullText += `${answerText}\n`;
+		//fullText += `${letter} ${answerText}\n`;
+	});
+
+	return fullText.trim();
+}
+
+function addSearch() {
+	const questions = document.querySelectorAll('.que.multichoice, .que.truefalse, .que.shortanswer, .que.essay');
+
+	questions.forEach(question => {
+		// Получаем полный текст вопроса с вариантами ответов
+		const questionText = getFullQuestionText(question);
+
+		// Создаем контейнер для кнопок
+		const buttonsContainer = document.createElement('div');
+		buttonsContainer.style.margin = '15px 0';
+		buttonsContainer.style.display = 'flex';
+		buttonsContainer.style.gap = '10px';
+		buttonsContainer.style.alignItems = 'center';
+
+		// Стиль для стеклянных кнопок
+		const glassButtonStyle = `
+			padding: 8px 16px;
+			background: rgba(255, 255, 255, 0.2);
+			backdrop-filter: blur(10px);
+			border: 1px solid rgba(255, 255, 255, 0.3);
+			border-radius: 8px;
+			color: #333;
+			font-size: 14px;
+			cursor: pointer;
+			transition: all 0.3s ease;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+		`;
+
+		const hoverStyle = `
+			background: rgba(255, 255, 255, 0.3);
+			transform: translateY(-1px);
+			box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+		`;
+
+		// Кнопка для поиска в Google
+		const googleButton = document.createElement('button');
+		googleButton.textContent = 'Поиск в Google';
+		googleButton.style.cssText = glassButtonStyle;
+		googleButton.addEventListener('mouseenter', () => {
+			googleButton.style.cssText = glassButtonStyle + hoverStyle;
+		});
+		googleButton.addEventListener('mouseleave', () => {
+			googleButton.style.cssText = glassButtonStyle;
+		});
+		googleButton.addEventListener('click', () => {
+			const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(questionText)}`;
+			window.open(searchUrl, '_blank');
+		});
+
+		// Кнопка для поиска в Яндекс
+		const yandexButton = document.createElement('button');
+		yandexButton.textContent = 'Поиск в Яндекс';
+		yandexButton.style.cssText = glassButtonStyle;
+		yandexButton.addEventListener('mouseenter', () => {
+			yandexButton.style.cssText = glassButtonStyle + hoverStyle;
+		});
+		yandexButton.addEventListener('mouseleave', () => {
+			yandexButton.style.cssText = glassButtonStyle;
+		});
+		yandexButton.addEventListener('click', () => {
+			const searchUrl = `https://yandex.ru/search/?text=${encodeURIComponent(questionText)}`;
+			window.open(searchUrl, '_blank');
+		});
+
+		// Добавляем кнопки в контейнер
+		buttonsContainer.appendChild(googleButton);
+		buttonsContainer.appendChild(yandexButton);
+
+		// Вставляем контейнер с кнопками после блока с вопросом
+		const questionContent = question.querySelector('.content');
+		if (questionContent) {
+			questionContent.appendChild(buttonsContainer);
+		}
+	});
+}
+
 // Инициализация
 function init() {
 	log("Document is ready.");
@@ -226,6 +324,7 @@ function init() {
 	replaceText();
 	removeDrawerToggle();
 	rebuildHeader();
+	addSearch();
 }
 
 // Запуск
