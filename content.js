@@ -92,6 +92,19 @@ function rebuildHeader() {
 
 	const sesskey = getCurrentSesskey();
 
+	const id = "page-header";
+	const origenalHTML = document.getElementById(id).innerHTML;
+	const positionSRC = origenalHTML.indexOf('https://edu.shspu.ru/pluginfile.php/');
+	const urlImg = origenalHTML.substring(positionSRC);
+	const positionSRCEnd = urlImg.indexOf('"', 1);
+	const imageURL = urlImg.substring(0, positionSRCEnd);
+
+	const origenalHTML2 = document.getElementById(id).innerHTML;
+	const positionHref = origenalHTML2.indexOf('https://edu.shspu.ru/user/profile.php?id=');
+	const urlHref = origenalHTML2.substring(positionHref);
+	const positionHrefEnd = urlHref.indexOf('"', 1);
+	const hrefURL = urlHref.substring(0, positionHrefEnd);
+
 	header.innerHTML = `
     <div class="header-background"
         style="background-image: url('//edu.shspu.ru/pluginfile.php/1/theme_fordson/headerdefaultimage/1732519865/shspu.jpg')">
@@ -99,8 +112,8 @@ function rebuildHeader() {
     <div class="header-content">
         <div class="header-top">
             <div class="user-profile">
-                <a href="https://edu.shspu.ru/user/profile.php?id=11707" class="user-avatar">
-                    <img src="https://edu.shspu.ru/pluginfile.php/81101/user/icon/fordson/f1?rev=3406996" alt="Аватар"
+                <a href="${hrefURL}" class="user-avatar">
+                    <img src="${imageURL}" alt="Аватар"
                         width="80" height="80">
                 </a>
             </div>
@@ -390,7 +403,8 @@ function addSearch() {
 		});
 		modalButton.addEventListener('click', (e) => {
 			e.preventDefault();
-			createSearchModal(questionText);
+			window.open(`https://chat.openai.com/?q=${encodeURIComponent(questionText)}`, '_blank');
+			//createSearchModal(questionText);
 		});
 
 		// Кнопка для поиска в Google
@@ -441,7 +455,7 @@ function init() {
 	removeCards();
 	replaceText();
 	removeDrawerToggle();
-	//rebuildHeader();
+	rebuildHeader();
 	addSearch();
 }
 
