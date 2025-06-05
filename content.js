@@ -111,12 +111,15 @@ function rebuildHeader() {
 				</a>
 		    </div>
 	`;
+	let avatarHTML2 = '';
 	if (positionSRC == -1)
 	{
-		const positionName = origenalHTML.indexOf('<div class="page-context-header">');
-		const positionNameEnd = origenalHTML.indexOf('</div>', positionName + 1);
-		const name = origenalHTML.substring(positionName, positionNameEnd) + '</div>';
-		avatarHTML = '<div class="user-profile">' + name + '</div>';
+		const positionName = origenalHTML.indexOf('<div class="card-body ">');
+		const positionNameEnd = origenalHTML.indexOf(`<div id="course-header">
+                        
+                    </div>`, positionName + 1);
+		const name = origenalHTML.substring(positionName, positionNameEnd) + '</div></div>';
+		avatarHTML = name;
 	}
 
 	header.innerHTML = `
@@ -125,7 +128,7 @@ function rebuildHeader() {
     </div>
     <div class="header-content">
         <div class="header-top">
-            ${avatarHTML}
+            ${positionSRC != -1 ? avatarHTML : ''}
 
             <div class="quick-access-cards">
                 <a href="/grade/report/overview/index.php" class="access-card" title="Оценки">
@@ -142,9 +145,9 @@ function rebuildHeader() {
                     <span class="card-title">LMS</span>
                 </a>
             </div>
+			${positionSRC == -1 ? avatarHTML : ''}
         </div>
     </div>
-
     <style>
         .header-background {
             position: absolute;
@@ -187,7 +190,7 @@ function rebuildHeader() {
         .quick-access-cards {
             display: flex;
             gap: 15px;
-            flex-grow: 1;
+            max-flex-grow: 0.2;
         }
 
         .access-card,
