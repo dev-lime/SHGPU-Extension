@@ -92,18 +92,43 @@ function rebuildHeader() {
 
 	const sesskey = getCurrentSesskey();
 
+	const id = "page-header";
+	const origenalHTML = document.getElementById(id).innerHTML;
+	let positionSRC = origenalHTML.indexOf('https://edu.shspu.ru/pluginfile.php/');
+	if (positionSRC == -1) positionSRC = origenalHTML.indexOf('https://edu.shspu.ru/theme/');
+	const positionSRCEnd = origenalHTML.indexOf('"', 1 + positionSRC);
+	const imageURL = origenalHTML.substring(positionSRC, positionSRCEnd);
+
+	const positionHref = origenalHTML.indexOf('https://edu.shspu.ru/user/profile.php?id=');
+	const positionHrefEnd = origenalHTML.indexOf('"', 1 + positionHref);
+	const hrefURL = origenalHTML.substring(positionHref, positionHrefEnd);
+
+	let avatarHTML = `
+			<div class="user-profile">
+				<a href = "${hrefURL}" class="user-avatar">
+					<img src="${imageURL}" alt="Аватар"
+						width="80" height="80">
+				</a>
+		    </div>
+	`;
+	let avatarHTML2 = '';
+	if (positionSRC == -1)
+	{
+		const positionName = origenalHTML.indexOf('<div class="card-body ">');
+		const positionNameEnd = origenalHTML.indexOf(`<div id="course-header">
+                        
+                    </div>`, positionName + 1);
+		const name = origenalHTML.substring(positionName, positionNameEnd) + '</div></div>';
+		avatarHTML = name;
+	}
+
 	header.innerHTML = `
     <div class="header-background"
         style="background-image: url('//edu.shspu.ru/pluginfile.php/1/theme_fordson/headerdefaultimage/1732519865/shspu.jpg')">
     </div>
     <div class="header-content">
         <div class="header-top">
-            <div class="user-profile">
-                <a href="https://edu.shspu.ru/user/profile.php?id=11707" class="user-avatar">
-                    <img src="https://edu.shspu.ru/pluginfile.php/81101/user/icon/fordson/f1?rev=3406996" alt="Аватар"
-                        width="80" height="80">
-                </a>
-            </div>
+            ${positionSRC != -1 ? avatarHTML : ''}
 
             <div class="quick-access-cards">
                 <a href="/grade/report/overview/index.php" class="access-card" title="Оценки">
@@ -120,9 +145,9 @@ function rebuildHeader() {
                     <span class="card-title">LMS</span>
                 </a>
             </div>
+			${positionSRC == -1 ? avatarHTML : ''}
         </div>
     </div>
-
     <style>
         .header-background {
             position: absolute;
@@ -165,7 +190,7 @@ function rebuildHeader() {
         .quick-access-cards {
             display: flex;
             gap: 15px;
-            flex-grow: 1;
+            max-flex-grow: 0.2;
         }
 
         .access-card,
@@ -280,7 +305,8 @@ function createSearchModal(questionText) {
 	contentArea.style.overflow = 'auto';
 	contentArea.style.padding = '16px';
 
-	showAiResponse(questionText, contentArea);
+
+	showAiResponse(questionText, contentArea, questionText.indexOf('<iframe') != -1);
 
 	content.appendChild(contentArea);
 	modal.appendChild(content);
@@ -288,7 +314,7 @@ function createSearchModal(questionText) {
 	document.body.appendChild(overlay);
 }
 
-function showAiResponse(questionText, container) {
+function showAiResponse(questionText, container, checkIframe) {
 	container.innerHTML = `
         <div style="display: flex; flex-direction: column; gap: 16px;">
             <div style="background: #e3f2fd; padding: 16px; border-radius: 6px;">
@@ -327,7 +353,7 @@ function showAiResponse(questionText, container) {
 		document.getElementById('ai-response').innerHTML = `
             <p>На основании анализа вопроса, возможные ответы могут быть следующими:</p>
             <ul style="margin-top: 8px; padding-left: 20px;">
-                ${questionText.split('\n').slice(1).filter(t => t.trim()).map(t => `<li>${t}</li>`).join('')}
+                ${checkIframe ? questionText : questionText.split('\n').slice(1).filter(t => t.trim()).map(t => `<li>${t}</li>`).join('')}
             </ul>
 		`;
 	}, 2000);
@@ -390,7 +416,18 @@ function addSearch() {
 		});
 		modalButton.addEventListener('click', (e) => {
 			e.preventDefault();
-			createSearchModal(questionText);
+			window.open(`https://chat.openai.com/?q=${encodeURIComponent(questionText)}`, '_blank');
+			/*
+			createSearchModal(
+			`<iframe
+			src="https://chat.openai.com/?q=${encodeURIComponent(questionText)}"
+			name="targetframe"
+			allowTransparency="true"
+			scrolling="no"
+			frameborder="0">
+			</iframe>`
+			);
+			*/
 		});
 
 		// Кнопка для поиска в Google
@@ -441,7 +478,7 @@ function init() {
 	removeCards();
 	replaceText();
 	removeDrawerToggle();
-	//rebuildHeader();
+	rebuildHeader();
 	addSearch();
 }
 
