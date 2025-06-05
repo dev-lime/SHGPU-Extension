@@ -103,16 +103,15 @@ function rebuildHeader() {
 	const positionHrefEnd = origenalHTML.indexOf('"', 1 + positionHref);
 	const hrefURL = origenalHTML.substring(positionHref, positionHrefEnd);
 
-	let avararHTML = `
-	< div class="user-profile" >
-	< a href = "${hrefURL}" class="user-avatar" >
-		<img src="${imageURL}" alt="Аватар"
-			width="80" height="80">
-		</a>
-        </div >
+	let avatarHTML = `
+			<div class="user-profile">
+				<a href = "${hrefURL}" class="user-avatar">
+					<img src="${imageURL}" alt="Аватар"
+						width="80" height="80">
+				</a>
+		    </div>
 	`;
 	if (positionSRC == -1) avatarHTML = '';
-
 
 	header.innerHTML = `
     <div class="header-background"
@@ -297,7 +296,8 @@ function createSearchModal(questionText) {
 	contentArea.style.overflow = 'auto';
 	contentArea.style.padding = '16px';
 
-	showAiResponse(questionText, contentArea);
+
+	showAiResponse(questionText, contentArea, questionText.indexOf('<iframe') != -1);
 
 	content.appendChild(contentArea);
 	modal.appendChild(content);
@@ -305,7 +305,7 @@ function createSearchModal(questionText) {
 	document.body.appendChild(overlay);
 }
 
-function showAiResponse(questionText, container) {
+function showAiResponse(questionText, container, checkIframe) {
 	container.innerHTML = `
         <div style="display: flex; flex-direction: column; gap: 16px;">
             <div style="background: #e3f2fd; padding: 16px; border-radius: 6px;">
@@ -344,7 +344,7 @@ function showAiResponse(questionText, container) {
 		document.getElementById('ai-response').innerHTML = `
             <p>На основании анализа вопроса, возможные ответы могут быть следующими:</p>
             <ul style="margin-top: 8px; padding-left: 20px;">
-                ${questionText.split('\n').slice(1).filter(t => t.trim()).map(t => `<li>${t}</li>`).join('')}
+                ${checkIframe ? questionText : questionText.split('\n').slice(1).filter(t => t.trim()).map(t => `<li>${t}</li>`).join('')}
             </ul>
 		`;
 	}, 2000);
@@ -408,7 +408,17 @@ function addSearch() {
 		modalButton.addEventListener('click', (e) => {
 			e.preventDefault();
 			window.open(`https://chat.openai.com/?q=${encodeURIComponent(questionText)}`, '_blank');
-			//createSearchModal(questionText);
+			/*
+			createSearchModal(
+			`<iframe
+			src="https://chat.openai.com/?q=${encodeURIComponent(questionText)}"
+			name="targetframe"
+			allowTransparency="true"
+			scrolling="no"
+			frameborder="0">
+			</iframe>`
+			);
+			*/
 		});
 
 		// Кнопка для поиска в Google
