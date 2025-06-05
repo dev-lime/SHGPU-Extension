@@ -103,6 +103,16 @@ function rebuildHeader() {
 	const positionHrefEnd = origenalHTML.indexOf('"', 1 + positionHref);
 	const hrefURL = origenalHTML.substring(positionHref, positionHrefEnd);
 
+	let avararHTML = `
+	< div class="user-profile" >
+	< a href = "${hrefURL}" class="user-avatar" >
+		<img src="${imageURL}" alt="Аватар"
+			width="80" height="80">
+		</a>
+        </div >
+	`;
+	if (positionSRC == -1) avatarHTML = '';
+
 
 	header.innerHTML = `
     <div class="header-background"
@@ -110,12 +120,7 @@ function rebuildHeader() {
     </div>
     <div class="header-content">
         <div class="header-top">
-            <div class="user-profile">
-                <a href="${hrefURL}" class="user-avatar">
-                    <img src="${imageURL}" alt="Аватар"
-                        width="80" height="80">
-                </a>
-            </div>
+            ${avatarHTML}
 
             <div class="quick-access-cards">
                 <a href="/grade/report/overview/index.php" class="access-card" title="Оценки">
