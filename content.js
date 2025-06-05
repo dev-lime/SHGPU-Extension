@@ -111,7 +111,13 @@ function rebuildHeader() {
 				</a>
 		    </div>
 	`;
-	if (positionSRC == -1) avatarHTML = '';
+	if (positionSRC == -1)
+	{
+		const positionName = origenalHTML.indexOf('<div class="page-context-header">');
+		const positionNameEnd = origenalHTML.indexOf('</div>', positionName + 1);
+		const name = origenalHTML.substring(positionName, positionNameEnd) + '</div>';
+		avatarHTML = '<div class="user-profile">' + name + '</div>';
+	}
 
 	header.innerHTML = `
     <div class="header-background"
