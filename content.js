@@ -94,16 +94,15 @@ function rebuildHeader() {
 
 	const id = "page-header";
 	const origenalHTML = document.getElementById(id).innerHTML;
-	const positionSRC = origenalHTML.indexOf('https://edu.shspu.ru/pluginfile.php/');
-	const urlImg = origenalHTML.substring(positionSRC);
-	const positionSRCEnd = urlImg.indexOf('"', 1);
-	const imageURL = urlImg.substring(0, positionSRCEnd);
+	let positionSRC = origenalHTML.indexOf('https://edu.shspu.ru/pluginfile.php/');
+	if (positionSRC == -1) positionSRC = origenalHTML.indexOf('https://edu.shspu.ru/theme/');
+	const positionSRCEnd = origenalHTML.indexOf('"', 1 + positionSRC);
+	const imageURL = origenalHTML.substring(positionSRC, positionSRCEnd);
 
-	const origenalHTML2 = document.getElementById(id).innerHTML;
-	const positionHref = origenalHTML2.indexOf('https://edu.shspu.ru/user/profile.php?id=');
-	const urlHref = origenalHTML2.substring(positionHref);
-	const positionHrefEnd = urlHref.indexOf('"', 1);
-	const hrefURL = urlHref.substring(0, positionHrefEnd);
+	const positionHref = origenalHTML.indexOf('https://edu.shspu.ru/user/profile.php?id=');
+	const positionHrefEnd = origenalHTML.indexOf('"', 1 + positionHref);
+	const hrefURL = origenalHTML.substring(positionHref, positionHrefEnd);
+
 
 	header.innerHTML = `
     <div class="header-background"
