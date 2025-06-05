@@ -441,7 +441,7 @@ function init() {
 	removeCards();
 	replaceText();
 	removeDrawerToggle();
-	rebuildHeader();
+	//rebuildHeader();
 	addSearch();
 }
 
