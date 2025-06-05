@@ -111,9 +111,8 @@ function rebuildHeader() {
 				</a>
 		    </div>
 	`;
-	let avatarHTML2 = '';
-	if (positionSRC == -1)
-	{
+
+	if (positionSRC == -1) {
 		const positionName = origenalHTML.indexOf('<div class="card-body ">');
 		const positionNameEnd = origenalHTML.indexOf(`<div id="course-header">
                         
@@ -129,7 +128,6 @@ function rebuildHeader() {
     <div class="header-content">
         <div class="header-top">
             ${positionSRC != -1 ? avatarHTML : ''}
-
             <div class="quick-access-cards">
                 <a href="/grade/report/overview/index.php" class="access-card" title="Оценки">
                     <div class="card-icon">
@@ -148,6 +146,7 @@ function rebuildHeader() {
 			${positionSRC == -1 ? avatarHTML : ''}
         </div>
     </div>
+	
     <style>
         .header-background {
             position: absolute;
@@ -305,8 +304,7 @@ function createSearchModal(questionText) {
 	contentArea.style.overflow = 'auto';
 	contentArea.style.padding = '16px';
 
-
-	showAiResponse(questionText, contentArea, questionText.indexOf('<iframe') != -1);
+	showAiResponse(questionText, contentArea);
 
 	content.appendChild(contentArea);
 	modal.appendChild(content);
@@ -314,7 +312,7 @@ function createSearchModal(questionText) {
 	document.body.appendChild(overlay);
 }
 
-function showAiResponse(questionText, container, checkIframe) {
+function showAiResponse(questionText, container) {
 	container.innerHTML = `
         <div style="display: flex; flex-direction: column; gap: 16px;">
             <div style="background: #e3f2fd; padding: 16px; border-radius: 6px;">
@@ -348,12 +346,12 @@ function showAiResponse(questionText, container, checkIframe) {
     `;
 	container.appendChild(spinnerStyle);
 
-	// Имитирует работу нейросети (в реальности здесь должен быть API-запрос)
+	// Имитирует работу нейросети (здесь должен быть API-запрос)
 	setTimeout(() => {
 		document.getElementById('ai-response').innerHTML = `
             <p>На основании анализа вопроса, возможные ответы могут быть следующими:</p>
             <ul style="margin-top: 8px; padding-left: 20px;">
-                ${checkIframe ? questionText : questionText.split('\n').slice(1).filter(t => t.trim()).map(t => `<li>${t}</li>`).join('')}
+                ${questionText.split('\n').slice(1).filter(t => t.trim()).map(t => `<li>${t}</li>`).join('')}
             </ul>
 		`;
 	}, 2000);
@@ -416,18 +414,7 @@ function addSearch() {
 		});
 		modalButton.addEventListener('click', (e) => {
 			e.preventDefault();
-			window.open(`https://chat.openai.com/?q=${encodeURIComponent(questionText)}`, '_blank');
-			/*
-			createSearchModal(
-			`<iframe
-			src="https://chat.openai.com/?q=${encodeURIComponent(questionText)}"
-			name="targetframe"
-			allowTransparency="true"
-			scrolling="no"
-			frameborder="0">
-			</iframe>`
-			);
-			*/
+			createSearchModal(questionText);
 		});
 
 		// Кнопка для поиска в Google
