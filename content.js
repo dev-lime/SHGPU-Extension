@@ -43,7 +43,7 @@ function removeCards() {
 		if (shouldRemove) {
 			const section = title.closest('section.block');
 			section?.remove();
-			log(`Удалена секция: "${title.textContent.trim()}"`);
+			log(`Section deleted: "${title.textContent.trim()}"`);
 		}
 	});
 }
@@ -70,17 +70,13 @@ function replaceText() {
 		}
 	});
 
-	log(`Произведено замен: ${replacementsCount}`);
+	log(`Replacements have been made: ${replacementsCount}`);
 }
 
 function removeDrawerToggle() {
 	const drawerToggle = document.querySelector('div[data-region="drawer-toggle"]');
 	drawerToggle?.remove();
-	log(drawerToggle ? 'Кнопка успешно удалена' : 'Элемент drawer-toggle не найден');
-}
-
-function getCurrentSesskey() {
-	return document.querySelector('input[name="sesskey"]')?.value || '';
+	log(drawerToggle ? 'The button was successfully deleted' : 'The drawer-toggle element was not found');
 }
 
 function rebuildHeader() {
@@ -90,9 +86,7 @@ function rebuildHeader() {
 	const fpwonderbox = document.querySelector('.fpwonderbox');
 	fpwonderbox?.remove();
 
-	const sesskey = getCurrentSesskey();
-
-	// подкатовка
+	// Подкатовка
 	const id = "page-header";
 	const body = '<div class="card-body ">';
 	const bodyEnd = `<div id="course-header">
@@ -104,7 +98,7 @@ function rebuildHeader() {
 	const origenalHTML = document.getElementById(id).innerHTML;
 	let avatarHTML = '';
 
-	// задний фон
+	// Задний фон
 	const positionHeaderbkg = origenalHTML.indexOf(headerbkg);
 	const positionHeaderbkgEnd = origenalHTML.indexOf('</div>', positionHeaderbkg + 1);
 	const customHTML2 = origenalHTML.substring(positionHeaderbkg, positionHeaderbkgEnd);
@@ -112,12 +106,12 @@ function rebuildHeader() {
 	const positionImageBackgroundEnd = customHTML2.indexOf(')', positionImageBackground + 1);
 	const imageBackgroundURL = customHTML2.substring(positionImageBackground, positionImageBackgroundEnd-1);
 
-	// информация в теле
+	// Информация в теле
 	const positionBody = origenalHTML.indexOf(body);
 	const positionBodyEnd = origenalHTML.indexOf(bodyEnd, positionBody + 1);
 	const customHTML = origenalHTML.substring(positionBody, positionBodyEnd);
 
-	// проверка аватарки
+	// Проверка аватарки
 	let positionSRC = customHTML.indexOf(imageConst);
 	if (positionSRC == -1)
 		positionSRC = customHTML.indexOf(imageDefault);
@@ -126,7 +120,7 @@ function rebuildHeader() {
 	
 	if (positionSRC != -1)
 	{
-		// аватарка и сылка на профиль
+		// Аватарка и ссылка на профиль
 		const positionHref = customHTML.indexOf('https://edu.shspu.ru/user/profile.php?id=');
 		const positionHrefEnd = customHTML.indexOf('"', positionHref + 1);
 		const hrefURL = customHTML.substring(positionHref, positionHrefEnd);
@@ -142,7 +136,7 @@ function rebuildHeader() {
 	}
 	else
 	{
-		// название прдмета
+		// Название предмета
 		const name = customHTML + '</div></div>';
 		avatarHTML = name;
 	}
@@ -485,8 +479,6 @@ function addSearch() {
 }
 
 function init() {
-	log("Document is ready.");
-
 	removeNavItems();
 	removeCards();
 	replaceText();
