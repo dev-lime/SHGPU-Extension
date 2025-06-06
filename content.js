@@ -92,38 +92,64 @@ function rebuildHeader() {
 
 	const sesskey = getCurrentSesskey();
 
+	// подкатовка
 	const id = "page-header";
-	const origenalHTML = document.getElementById(id).innerHTML;
-	let positionSRC = origenalHTML.indexOf('https://edu.shspu.ru/pluginfile.php/');
-	if (positionSRC == -1) positionSRC = origenalHTML.indexOf('https://edu.shspu.ru/theme/');
-	const positionSRCEnd = origenalHTML.indexOf('"', 1 + positionSRC);
-	const imageURL = origenalHTML.substring(positionSRC, positionSRCEnd);
-
-	const positionHref = origenalHTML.indexOf('https://edu.shspu.ru/user/profile.php?id=');
-	const positionHrefEnd = origenalHTML.indexOf('"', 1 + positionHref);
-	const hrefURL = origenalHTML.substring(positionHref, positionHrefEnd);
-
-	let avatarHTML = `
-			<div class="user-profile">
-				<a href = "${hrefURL}" class="user-avatar">
-					<img src="${imageURL}" alt="Аватар"
-						width="80" height="80">
-				</a>
-		    </div>
-	`;
-
-	if (positionSRC == -1) {
-		const positionName = origenalHTML.indexOf('<div class="card-body ">');
-		const positionNameEnd = origenalHTML.indexOf(`<div id="course-header">
+	const body = '<div class="card-body ">';
+	const bodyEnd = `<div id="course-header">
                         
-                    </div>`, positionName + 1);
-		const name = origenalHTML.substring(positionName, positionNameEnd) + '</div></div>';
+                    </div>`;
+	const headerbkg = '<div class="headerbkg">';
+	const imageConst = '//edu.shspu.ru/pluginfile.php/';
+	const imageDefault = "https://edu.shspu.ru/theme/image.php/fordson/core/1732519865/u/f1";
+	const origenalHTML = document.getElementById(id).innerHTML;
+	let avatarHTML = '';
+
+	// задний фон
+	const positionHeaderbkg = origenalHTML.indexOf(headerbkg);
+	const positionHeaderbkgEnd = origenalHTML.indexOf('</div>', positionHeaderbkg + 1);
+	const customHTML2 = origenalHTML.substring(positionHeaderbkg, positionHeaderbkgEnd);
+	const positionImageBackground = customHTML2.indexOf(imageConst);
+	const positionImageBackgroundEnd = customHTML2.indexOf(')', positionImageBackground + 1);
+	const imageBackgroundURL = customHTML2.substring(positionImageBackground, positionImageBackgroundEnd-1);
+
+	// информация в теле
+	const positionBody = origenalHTML.indexOf(body);
+	const positionBodyEnd = origenalHTML.indexOf(bodyEnd, positionBody + 1);
+	const customHTML = origenalHTML.substring(positionBody, positionBodyEnd);
+
+	// проверка аватарки
+	let positionSRC = customHTML.indexOf(imageConst);
+	if (positionSRC == -1)
+		positionSRC = customHTML.indexOf(imageDefault);
+	const positionSRCEnd = customHTML.indexOf('"', positionSRC + 1);
+	const imageURL = customHTML.substring(positionSRC, positionSRCEnd);
+	
+	if (positionSRC != -1)
+	{
+		// аватарка и сылка на профиль
+		const positionHref = customHTML.indexOf('https://edu.shspu.ru/user/profile.php?id=');
+		const positionHrefEnd = customHTML.indexOf('"', positionHref + 1);
+		const hrefURL = customHTML.substring(positionHref, positionHrefEnd);
+
+		avatarHTML = `
+		<div class="user-profile">
+			<a href = "${hrefURL}" class="user-avatar">
+				<img src="${imageURL}" alt="Аватар"
+					width="80" height="80">
+			</a>
+		</div>
+		`;
+	}
+	else
+	{
+		// название прдмета
+		const name = customHTML + '</div></div>';
 		avatarHTML = name;
 	}
 
 	header.innerHTML = `
     <div class="header-background"
-        style="background-image: url('//edu.shspu.ru/pluginfile.php/1/theme_fordson/headerdefaultimage/1732519865/shspu.jpg')">
+        style="background-image: url('${imageBackgroundURL}')">
     </div>
     <div class="header-content">
         <div class="header-top">
@@ -146,7 +172,6 @@ function rebuildHeader() {
 			${positionSRC == -1 ? avatarHTML : ''}
         </div>
     </div>
-	
     <style>
         .header-background {
             position: absolute;
@@ -189,7 +214,7 @@ function rebuildHeader() {
         .quick-access-cards {
             display: flex;
             gap: 15px;
-            max-flex-grow: 0.2;
+            max-flex-grow: 1;
         }
 
         .access-card,
@@ -304,6 +329,7 @@ function createSearchModal(questionText) {
 	contentArea.style.overflow = 'auto';
 	contentArea.style.padding = '16px';
 
+
 	showAiResponse(questionText, contentArea);
 
 	content.appendChild(contentArea);
@@ -351,7 +377,7 @@ function showAiResponse(questionText, container) {
 		document.getElementById('ai-response').innerHTML = `
             <p>На основании анализа вопроса, возможные ответы могут быть следующими:</p>
             <ul style="margin-top: 8px; padding-left: 20px;">
-                ${questionText.split('\n').slice(1).filter(t => t.trim()).map(t => `<li>${t}</li>`).join('')}
+               ${questionText.split('\n').slice(1).filter(t => t.trim()).map(t => `<li>${t}</li>`).join('')}
             </ul>
 		`;
 	}, 2000);
