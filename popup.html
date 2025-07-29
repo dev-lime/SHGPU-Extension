@@ -1,151 +1,29 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<style>
-		body {
-			width: 100%;
-			min-height: 100%;
-			font-family: 'Segoe UI', system-ui, sans-serif;
-			background: linear-gradient(135deg, #44a561 0%, #186910 100%);
-			margin: 0;
-			padding: 10px;
-			box-sizing: border-box;
-		}
-
-		.glass-container {
-			background: rgba(255, 255, 255, 0.15);
-			backdrop-filter: blur(10px);
-			-webkit-backdrop-filter: blur(10px);
-			border-radius: 16px;
-			border: 1px solid rgba(255, 255, 255, 0.18);
-			box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
-			padding: 20px;
-			width: 100%;
-			max-width: 300px;
-			margin: 0 auto;
-			box-sizing: border-box;
-		}
-
-		h1 {
-			color: white;
-			text-align: center;
-			margin: 0 0 15px 0;
-			font-size: 1.5rem;
-			text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-		}
-
-		.glass-list {
-			list-style: none;
-			padding: 0;
-			margin: 0;
-		}
-
-		.glass-button {
-			background: rgba(255, 255, 255, 0.2);
-			backdrop-filter: blur(5px);
-			-webkit-backdrop-filter: blur(5px);
-			border: 1px solid rgba(255, 255, 255, 0.3);
-			border-radius: 10px;
-			color: white;
-			padding: 12px 15px;
-			margin: 8px 0;
-			width: 100%;
-			font-size: 14px;
-			font-weight: 500;
-			cursor: pointer;
-			transition: all 0.3s ease;
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			box-sizing: border-box;
-		}
-
-		.glass-button:hover {
-			background: rgba(255, 255, 255, 0.3);
-			transform: translateY(-2px);
-			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-		}
-
-		.glass-button:active {
-			transform: translateY(0);
-		}
-
-		.glass-button i {
-			font-size: 18px;
-			margin-right: 10px;
-		}
-
-		.icon-home::before {
-			content: "🏠";
-		}
-
-		.icon-settings::before {
-			content: "⚙️";
-		}
-
-		.icon-info::before {
-			content: "ℹ️";
-		}
-
-		.icon-download::before {
-			content: "⬇️";
-		}
-
-		.icon-contact::before {
-			content: "📧";
-		}
-
-		.glass-button span:last-child {
-			font-size: 16px;
-			opacity: 0.7;
-		}
-	</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Быстрый доступ ШГПУ</title>
+    <link rel="stylesheet" href="popup.css">
 </head>
-
 <body>
-	<div class="glass-container">
-		<h1>Меню (в разработке)</h1>
-		<ul class="glass-list">
-			<li>
-				<button class="glass-button">
-					<span class="icon-home"></span>
-					<span style="flex-grow: 1; text-align: left;">Главная страница</span>
-					<span>→</span>
-				</button>
-			</li>
-			<li>
-				<button class="glass-button">
-					<span class="icon-settings"></span>
-					<span style="flex-grow: 1; text-align: left;">Настройки</span>
-					<span>→</span>
-				</button>
-			</li>
-			<li>
-				<button class="glass-button">
-					<span class="icon-info"></span>
-					<span style="flex-grow: 1; text-align: left;">Информация</span>
-					<span>→</span>
-				</button>
-			</li>
-			<li>
-				<button class="glass-button">
-					<span class="icon-download"></span>
-					<span style="flex-grow: 1; text-align: left;">Загрузки</span>
-					<span>→</span>
-				</button>
-			</li>
-			<li>
-				<button class="glass-button">
-					<span class="icon-contact"></span>
-					<span style="flex-grow: 1; text-align: left;">Контакты</span>
-					<span>→</span>
-				</button>
-			</li>
-		</ul>
-	</div>
+    <div class="glass-container">
+        <h1>Быстрый доступ</h1>
+        <ul class="glass-list">
+            <li>
+                <button class="glass-button" id="eios-button">
+                    <span class="icon-eios"></span>
+                    <span style="flex-grow: 1; text-align: left;">ЭИОС</span>
+                </button>
+            </li>
+            <li>
+                <button class="glass-button" id="lms-button">
+                    <span class="icon-lms"></span>
+                    <span style="flex-grow: 1; text-align: left;">LMS</span>
+                </button>
+            </li>
+        </ul>
+    </div>
+    <script src="popup.js"></script>
 </body>
-
 </html>
