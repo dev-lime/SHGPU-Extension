@@ -29,3 +29,88 @@ body {
 	/* Non-prefixed version, currently
                                   supported by Chrome, Edge, Opera and Firefox */
 }
+
+/* Glassmorphism для карточек курсов */
+.dashboard-card {
+    background: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+    border-radius: 12px !important;
+    box-shadow: 
+        0 4px 15px rgba(0, 0, 0, 0.1),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.6) !important;
+    transition: all 0.3s ease !important;
+    overflow: hidden !important;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-3px) !important;
+    box-shadow: 
+        0 6px 20px rgba(0, 0, 0, 0.15),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Заголовок курса */
+.coursename {
+    color: #2c3e50 !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+}
+
+.coursename:hover {
+    color: #1a252f !important;
+    text-decoration: underline !important;
+}
+
+/* Категория */
+.categoryname {
+    color: #7f8c8d !important;
+    font-size: 0.85rem !important;
+}
+
+/* Иконки */
+.btn-link {
+    color: #95a5a6 !important;
+}
+
+.btn-link:hover {
+    color: #1abc9c !important;
+}
+
+/* Выпадающее меню */
+.dropdown-menu {
+    background: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(8px) !important;
+    border: 1px solid rgba(0, 0, 0, 0.08) !important;
+    border-radius: 8px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+.dropdown-item {
+    color: #34495e !important;
+}
+
+/* Изображение курса */
+.dashboard-card-img {
+    border-radius: 12px 12px 0 0 !important;
+    background-size: cover !important;
+    background-position: center !important;
+    height: 150px !important;
+    position: relative !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Темная тема */
+/*@media (prefers-color-scheme: dark) {
+    .dashboard-card {
+        background: rgba(30, 30, 30, 0.8) !important;
+        border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+    .coursename {
+        color: #ecf0f1 !important;
+    }
+    .categoryname {
+        color: #bdc3c7 !important;
+    }
+}*/
