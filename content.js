@@ -104,7 +104,7 @@ function rebuildHeader() {
 	const customHTML2 = origenalHTML.substring(positionHeaderbkg, positionHeaderbkgEnd);
 	const positionImageBackground = customHTML2.indexOf(imageConst);
 	const positionImageBackgroundEnd = customHTML2.indexOf(')', positionImageBackground + 1);
-	const imageBackgroundURL = customHTML2.substring(positionImageBackground, positionImageBackgroundEnd-1);
+	const imageBackgroundURL = customHTML2.substring(positionImageBackground, positionImageBackgroundEnd - 1);
 
 	// Информация в теле
 	const positionBody = origenalHTML.indexOf(body);
@@ -117,9 +117,8 @@ function rebuildHeader() {
 		positionSRC = customHTML.indexOf(imageDefault);
 	const positionSRCEnd = customHTML.indexOf('"', positionSRC + 1);
 	const imageURL = customHTML.substring(positionSRC, positionSRCEnd);
-	
-	if (positionSRC != -1)
-	{
+
+	if (positionSRC != -1) {
 		// Аватарка и ссылка на профиль
 		const positionHref = customHTML.indexOf('https://edu.shspu.ru/user/profile.php?id=');
 		const positionHrefEnd = customHTML.indexOf('"', positionHref + 1);
@@ -134,8 +133,7 @@ function rebuildHeader() {
 		</div>
 		`;
 	}
-	else
-	{
+	else {
 		// Название предмета
 		const name = customHTML + '</div></div>';
 		avatarHTML = name;
