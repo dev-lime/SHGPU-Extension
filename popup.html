@@ -1,29 +1,112 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Быстрый доступ ШГПУ</title>
     <link rel="stylesheet" href="popup.css">
 </head>
+
 <body>
     <div class="glass-container">
-        <h1>Быстрый доступ</h1>
-        <ul class="glass-list">
-            <li>
-                <button class="glass-button" id="eios-button">
-                    <span class="icon-eios"></span>
-                    <span style="flex-grow: 1; text-align: left;">ЭИОС</span>
-                </button>
-            </li>
-            <li>
-                <button class="glass-button" id="lms-button">
-                    <span class="icon-lms"></span>
-                    <span style="flex-grow: 1; text-align: left;">LMS</span>
-                </button>
-            </li>
-        </ul>
+        <div class="tabs">
+            <button class="tab-button active" data-tab="main">Главная</button>
+            <button class="tab-button" data-tab="settings">Настройки</button>
+        </div>
+
+        <div id="main-tab" class="tab-content active">
+            <h1>Быстрый доступ</h1>
+            <ul class="glass-list">
+                <li>
+                    <button class="glass-button" id="eios-button">
+                        <svg class="menu-icon" viewBox="0 0 24 24">
+                            <path fill="currentColor"
+                                d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" />
+                        </svg>
+                        <span style="flex-grow: 1; text-align: left;">ЭИОС</span>
+                    </button>
+                </li>
+                <li>
+                    <button class="glass-button" id="lms-button">
+                        <svg class="menu-icon" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M4 5v13h17V5H4m10 2v9h-3V7h3M6 7h3v9H6V7m13 9h-3V7h3v9z" />
+                        </svg>
+                        <span style="flex-grow: 1; text-align: left;">LMS</span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <div id="settings-tab" class="tab-content">
+            <h1>Настройки</h1>
+
+            <div class="setting-group">
+                <label class="setting-label">Тема интерфейса</label>
+                <div class="theme-options">
+                    <button class="theme-option" data-theme="light">
+                        <div class="theme-preview light"></div>
+                        <span>Светлая</span>
+                    </button>
+                    <button class="theme-option" data-theme="dark">
+                        <div class="theme-preview dark"></div>
+                        <span>Тёмная</span>
+                    </button>
+                    <button class="theme-option" data-theme="system">
+                        <div class="theme-preview system"></div>
+                        <span>Системная</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="setting-group">
+                <label class="setting-label">Акцентный цвет</label>
+                <div class="color-picker-wrapper">
+                    <input type="color" id="accent-color" value="#44a561" class="color-picker">
+                    <div class="color-presets">
+                        <button class="color-preset" style="--color: #44a561"></button>
+                        <button class="color-preset" style="--color: #3f51b5"></button>
+                        <button class="color-preset" style="--color: #9c27b0"></button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="setting-group">
+                <label class="setting-label">Поиск в тесте</label>
+                <div class="dropdown">
+                    <button class="dropdown-toggle glass-button">
+                        <span>Выбрать поисковики</span>
+                        <span class="dropdown-arrow">▼</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <label class="dropdown-item">
+                            <input type="checkbox" class="search-checkbox" value="yandex">
+                            <span>Яндекс</span>
+                        </label>
+                        <label class="dropdown-item">
+                            <input type="checkbox" class="search-checkbox" value="google">
+                            <span>Google</span>
+                        </label>
+                        <label class="dropdown-item">
+                            <input type="checkbox" class="search-checkbox" value="ai">
+                            <span>Нейросеть</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="github-link">
+                <a href="https://github.com/dev-lime/SHGPU-Extension" target="_blank" class="github-button">
+                    <svg class="github-icon" viewBox="0 0 24 24">
+                        <path fill="currentColor"
+                            d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+                    </svg>
+                    GitHub проекта
+                </a>
+            </div>
+        </div>
     </div>
     <script src="popup.js"></script>
 </body>
+
 </html>

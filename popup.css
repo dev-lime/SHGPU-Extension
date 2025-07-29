@@ -1,35 +1,73 @@
 body {
-    width: 100%;
-    min-height: 100%;
+    width: 320px;
+    min-height: 200px;
     font-family: 'Segoe UI', system-ui, sans-serif;
-    background: linear-gradient(135deg, #44a561 0%, #186910 100%);
+    background: linear-gradient(135deg, var(--accent-color, #44a561) 0%, #186910 100%);
     margin: 0;
-    padding: 10px;
-    box-sizing: border-box;
+    padding: 0;
+    color: white;
+    --accent-color: #44a561;
 }
 
 .glass-container {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
-    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow:
+        0 8px 32px 0 rgba(31, 38, 135, 0.2),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+    padding: 15px;
     width: 100%;
-    max-width: 300px;
-    margin: 0 auto;
     box-sizing: border-box;
+    overflow: hidden;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    margin-bottom: 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 4px;
+    backdrop-filter: blur(5px);
+}
+
+.tab-button {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(5px);
+}
+
+.tab-button.active {
+    background: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
 }
 
 h1 {
-    color: white;
     text-align: center;
     margin: 0 0 15px 0;
-    font-size: 1.5rem;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    font-size: 1.3rem;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
+/* Buttons & Lists */
 .glass-list {
     list-style: none;
     padding: 0;
@@ -37,10 +75,10 @@ h1 {
 }
 
 .glass-button {
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 10px;
     color: white;
     padding: 12px 15px;
@@ -54,27 +92,275 @@ h1 {
     align-items: center;
     justify-content: space-between;
     box-sizing: border-box;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .glass-button:hover {
-    background: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.25);
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .glass-button:active {
     transform: translateY(0);
 }
 
-.glass-button i {
-    font-size: 18px;
+.menu-icon {
+    width: 20px;
+    height: 20px;
     margin-right: 10px;
+    opacity: 0.9;
 }
 
-.icon-eios::before {
-    content: "📚 ";
+/* Settings */
+.setting-group {
+    margin-bottom: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
-.icon-lms::before {
-    content: "💻 ";
+.setting-label {
+    display: block;
+    margin-bottom: 12px;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+/* Theme Selector */
+.theme-options {
+    display: flex;
+    gap: 10px;
+}
+
+.theme-option {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: white;
+    padding: 0;
+    cursor: pointer;
+    transition: transform 0.2s;
+    position: relative;
+}
+
+.theme-option.active::after {
+    content: "✓";
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    width: 20px;
+    height: 20px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.theme-option:hover {
+    transform: translateY(-3px);
+}
+
+.theme-preview {
+    height: 50px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.theme-option:hover .theme-preview {
+    border-color: rgba(255, 255, 255, 0.6);
+}
+
+.theme-option.active .theme-preview {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px var(--accent-color);
+}
+
+.theme-preview.light {
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+}
+
+.theme-preview.dark {
+    background: linear-gradient(135deg, #2c3e50 0%, #1a1a1a 100%);
+}
+
+.theme-preview.system {
+    background: linear-gradient(135deg, #f5f7fa 50%, #2c3e50 50%);
+}
+
+/* Color Picker */
+.color-picker-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.color-picker {
+    width: 50px;
+    height: 30px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    flex-shrink: 0;
+}
+
+.color-picker::-webkit-color-swatch {
+    border: none;
+    border-radius: 4px;
+}
+
+.color-picker::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.color-presets {
+    display: flex;
+    gap: 8px;
+    flex-grow: 1;
+}
+
+.color-preset {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    background: var(--color);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.color-preset:hover {
+    transform: scale(1.1);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.color-preset.active {
+    border-color: white;
+    box-shadow: 0 0 0 2px var(--color);
+}
+
+/* Dropdown */
+.dropdown {
+    position: relative;
+    margin-bottom: 10px;
+    z-index: 1;
+}
+
+.dropdown-toggle {
+    width: 100%;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dropdown-arrow {
+    font-size: 10px;
+    transition: transform 0.3s;
+}
+
+.dropdown.active .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgba(40, 40, 40, 0.95);
+    backdrop-filter: blur(20px);
+    border-radius: 8px;
+    padding: 8px;
+    margin-top: 5px;
+    z-index: 10;
+    display: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    max-height: 180px;
+    overflow-y: auto;
+}
+
+.dropdown.active .dropdown-menu {
+    display: block;
+    animation: fadeIn 0.2s ease;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+    color: white;
+}
+
+.dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.dropdown-item input {
+    margin-right: 8px;
+}
+
+/* GitHub Link */
+.github-link {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.github-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 13px;
+    padding: 6px 10px;
+    border-radius: 6px;
+    transition: all 0.3s;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.github-button:hover {
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+    text-decoration: none;
+}
+
+.github-icon {
+    width: 16px;
+    height: 16px;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.github-button:hover .github-icon {
+    opacity: 1;
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
