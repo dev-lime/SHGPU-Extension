@@ -101,6 +101,11 @@ body {
     border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
 }
 
+/* Скрытие подвала */
+#page-footer {
+    display: none !important;
+}
+
 /* Темная тема */
 /*@media (prefers-color-scheme: dark) {
     .dashboard-card {
