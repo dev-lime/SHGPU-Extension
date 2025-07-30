@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Быстрый доступ ШГПУ</title>
+    <title>SHGPU-Extension</title>
     <link rel="stylesheet" href="popup.css">
 </head>
 
@@ -60,40 +60,38 @@
             </div>
 
             <div class="setting-group">
-                <label class="setting-label">Акцентный цвет</label>
-                <div class="color-picker-wrapper">
-                    <input type="color" id="accent-color" value="#44a561" class="color-picker">
-                    <div class="color-presets">
-                        <button class="color-preset" style="--color: #44a561"></button>
-                        <button class="color-preset" style="--color: #3f51b5"></button>
-                        <button class="color-preset" style="--color: #9c27b0"></button>
-                    </div>
+                <label class="setting-label">Поиск в тесте</label>
+                <div class="search-engines-container">
+                    <label class="search-engine-option">
+                        <input type="checkbox" class="search-checkbox" value="yandex">
+                        <span class="search-engine-label">Яндекс</span>
+                    </label>
+                    <label class="search-engine-option">
+                        <input type="checkbox" class="search-checkbox" value="google">
+                        <span class="search-engine-label">Google</span>
+                    </label>
+                    <label class="search-engine-option">
+                        <input type="checkbox" class="search-checkbox" value="ai">
+                        <span class="search-engine-label">Нейросеть</span>
+                    </label>
                 </div>
             </div>
 
             <div class="setting-group">
-                <label class="setting-label">Поиск в тесте</label>
-                <div class="dropdown">
-                    <button class="dropdown-toggle glass-button">
-                        <span>Выбрать поисковики</span>
-                        <span class="dropdown-arrow">▼</span>
-                    </button>
-                    <div class="dropdown-menu">
-                        <label class="dropdown-item">
-                            <input type="checkbox" class="search-checkbox" value="yandex">
-                            <span>Яндекс</span>
-                        </label>
-                        <label class="dropdown-item">
-                            <input type="checkbox" class="search-checkbox" value="google">
-                            <span>Google</span>
-                        </label>
-                        <label class="dropdown-item">
-                            <input type="checkbox" class="search-checkbox" value="ai">
-                            <span>Нейросеть</span>
-                        </label>
-                    </div>
+                <label class="setting-label">Автовход в ЭИОС</label>
+                <div class="login-fields">
+                    <input type="text" id="shgpu-username" placeholder="Логин" class="glass-input">
+                    <input type="password" id="shgpu-password" placeholder="Пароль" class="glass-input">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" id="auto-login">
+                        <span class="checkmark"></span>
+                        <span class="checkbox-label">Автоматический вход</span>
+                    </label>
                 </div>
+                <div id="login-status" class="status-message"></div>
             </div>
+
+            <button id="save-settings" class="glass-button" disabled>Сохранить настройки</button>
 
             <div class="github-link">
                 <a href="https://github.com/dev-lime/SHGPU-Extension" target="_blank" class="github-button">

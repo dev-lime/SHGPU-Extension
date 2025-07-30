@@ -14,11 +14,11 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Main buttons
-    document.getElementById('eios-button').addEventListener('click', function () {
+    document.getElementById('eios-button')?.addEventListener('click', function () {
         chrome.tabs.create({ url: 'https://edu.shspu.ru/my' });
     });
 
-    document.getElementById('lms-button').addEventListener('click', function () {
+    document.getElementById('lms-button')?.addEventListener('click', function () {
         chrome.tabs.create({ url: 'https://shgpu-lms.web.app' });
     });
 
@@ -32,44 +32,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
             themeOptions.forEach(opt => opt.classList.remove('active'));
             this.classList.add('active');
+            enableSaveButton();
         });
-    });
-
-    // Accent color picker
-    const colorPicker = document.getElementById('accent-color');
-    colorPicker.addEventListener('input', function () {
-        const color = this.value;
-        updateAccentColor(color);
-        chrome.storage.sync.set({ accentColor: color });
-    });
-
-    // Color presets
-    const colorPresets = document.querySelectorAll('.color-preset');
-    colorPresets.forEach(preset => {
-        preset.addEventListener('click', function () {
-            const color = getComputedStyle(this).getPropertyValue('--color');
-            colorPicker.value = color;
-            updateAccentColor(color);
-            chrome.storage.sync.set({ accentColor: color });
-        });
-    });
-
-    // Dropdown for search engines
-    const dropdownToggle = document.querySelector('.dropdown-toggle');
-    dropdownToggle.addEventListener('click', function (e) {
-        e.stopPropagation();
-        document.querySelector('.dropdown').classList.toggle('active');
-    });
-
-    // Keep dropdown open when clicking inside
-    const dropdownMenu = document.querySelector('.dropdown-menu');
-    dropdownMenu.addEventListener('click', function (e) {
-        e.stopPropagation();
-    });
-
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function () {
-        document.querySelector('.dropdown').classList.remove('active');
     });
 
     // Search engine checkboxes
@@ -79,21 +43,68 @@ document.addEventListener('DOMContentLoaded', function () {
             const searchEngines = Array.from(document.querySelectorAll('.search-checkbox:checked'))
                 .map(cb => cb.value);
             chrome.storage.sync.set({ searchEngines: searchEngines });
+            enableSaveButton();
         });
     });
 
-    // Load saved settings
-    chrome.storage.sync.get(['theme', 'accentColor', 'searchEngines'], function (data) {
+    // Элементы автовхода
+    const usernameInput = document.getElementById('shgpu-username');
+    const passwordInput = document.getElementById('shgpu-password');
+    const autoLoginCheckbox = document.getElementById('auto-login');
+    const saveSettingsButton = document.getElementById('save-settings');
+    const loginStatus = document.getElementById('login-status');
+
+    // Обработчики изменений для полей входа
+    if (usernameInput && passwordInput && autoLoginCheckbox) {
+        [usernameInput, passwordInput].forEach(input => {
+            input.addEventListener('input', enableSaveButton);
+        });
+
+        autoLoginCheckbox.addEventListener('change', enableSaveButton);
+    }
+
+    // Сохранение всех настроек
+    if (saveSettingsButton) {
+        saveSettingsButton.addEventListener('click', function () {
+            const username = usernameInput?.value;
+            const password = passwordInput?.value;
+            const autoLogin = autoLoginCheckbox?.checked;
+
+            // Получаем текущие значения поисковиков
+            const searchEngines = Array.from(document.querySelectorAll('.search-checkbox:checked'))
+                .map(cb => cb.value);
+
+            // Получаем текущую тему
+            const activeThemeOption = document.querySelector('.theme-option.active');
+            const theme = activeThemeOption?.dataset.theme;
+
+            // Сохраняем все настройки
+            chrome.storage.sync.set({
+                shgpuUsername: username,
+                shgpuPassword: password,
+                autoLogin: autoLogin,
+                searchEngines: searchEngines,
+                theme: theme
+            }, function () {
+                showLoginStatus('Все настройки сохранены', 'success');
+                saveSettingsButton.disabled = true;
+            });
+        });
+    }
+
+    // Загрузка сохраненных данных
+    chrome.storage.sync.get([
+        'theme',
+        'accentColor',
+        'searchEngines',
+        'shgpuUsername',
+        'shgpuPassword',
+        'autoLogin'
+    ], function (data) {
         // Theme
         if (data.theme) {
             applyTheme(data.theme);
-            document.querySelector(`.theme-option[data-theme="${data.theme}"]`).classList.add('active');
-        }
-
-        // Accent color
-        if (data.accentColor) {
-            colorPicker.value = data.accentColor;
-            updateAccentColor(data.accentColor);
+            document.querySelector(`.theme-option[data-theme="${data.theme}"]`)?.classList.add('active');
         }
 
         // Search engines
@@ -102,7 +113,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 checkbox.checked = data.searchEngines.includes(checkbox.value);
             });
         }
+
+        // Auto login
+        if (data.shgpuUsername && usernameInput) usernameInput.value = data.shgpuUsername;
+        if (data.shgpuPassword && passwordInput) passwordInput.value = data.shgpuPassword;
+        if (data.autoLogin && autoLoginCheckbox) autoLoginCheckbox.checked = data.autoLogin;
     });
+
+    // Функция включения кнопки сохранения
+    function enableSaveButton() {
+        if (saveSettingsButton) {
+            saveSettingsButton.disabled = false;
+        }
+    }
 
     // Apply theme function
     function applyTheme(theme) {
@@ -113,8 +136,16 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Update accent color
-    function updateAccentColor(color) {
-        document.documentElement.style.setProperty('--accent-color', color);
+    // Функция показа статуса
+    function showLoginStatus(message, type) {
+        if (!loginStatus) return;
+
+        loginStatus.textContent = message;
+        loginStatus.className = 'status-message ' + type;
+        loginStatus.style.display = 'block';
+
+        setTimeout(() => {
+            loginStatus.style.display = 'none';
+        }, 3000);
     }
 });

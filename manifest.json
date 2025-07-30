@@ -1,10 +1,12 @@
 {
 	"manifest_version": 3,
 	"name": "SHGPU-Extension",
-	"version": "0.1.5",
+	"version": "0.1.6",
 	"description": "Полезное дополнение с новыми функциями и обновлённым дизайном для ЭИОС ШГПУ (edu.shspu.ru)",
 	"icons": {
-		"48": "icon.png"
+		"16": "icons/icon16.png",
+		"48": "icons/icon48.png",
+		"128": "icons/icon128.png"
 	},
 	"content_scripts": [
 		{
@@ -20,14 +22,25 @@
 		}
 	],
 	"permissions": [
-        "tabs",
-		"storage"
+		"tabs",
+		"storage",
+		"scripting"
 	],
-	"action": {
-		"default_icon": "icon.png",
-		"default_popup": "popup.html"
+	"host_permissions": [
+		"*://edu.shspu.ru/*"
+	],
+	"background": {
+		"service_worker": "background.js"
 	},
-    "content_security_policy": {
-        "extension_pages": "script-src 'self'; object-src 'self'"
-    }
+	"action": {
+		"default_popup": "popup.html",
+		"default_icon": {
+			"16": "icons/icon16.png",
+			"48": "icons/icon48.png",
+			"128": "icons/icon128.png"
+		}
+	},
+	"content_security_policy": {
+		"extension_pages": "script-src 'self'; object-src 'self'"
+	}
 }

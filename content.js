@@ -477,6 +477,32 @@ function addSearch() {
 	});
 }
 
+// Если сейчас страница входа ШГПУ
+if (window.location.href.includes('edu.shspu.ru/login/index.php')) {
+	chrome.storage.sync.get(['shgpuUsername', 'shgpuPassword', 'autoLogin'], function (data) {
+		const username = data.shgpuUsername;
+		const password = data.shgpuPassword;
+		const autoLogin = data.autoLogin || false;
+
+		if (username && password) {
+			const usernameField = document.getElementById('username');
+			const passwordField = document.getElementById('password');
+			const rememberCheckbox = document.getElementById('rememberusername');
+			const loginButton = document.getElementById('loginbtn');
+
+			if (usernameField) usernameField.value = username;
+			if (passwordField) passwordField.value = password;
+			if (rememberCheckbox) rememberCheckbox.checked = true;
+
+			if (autoLogin && loginButton) {
+				setTimeout(() => {
+					loginButton.click();
+				}, 500);
+			}
+		}
+	});
+}
+
 function init() {
 	removeNavItems();
 	removeCards();
