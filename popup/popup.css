@@ -1,21 +1,56 @@
+/* Основные переменные для тем */
+:root {
+    --accent-color: #44a561;
+    --text-color: white;
+    --bg-gradient: linear-gradient(135deg, var(--accent-color) 0%, #186910 100%);
+    --container-bg: rgba(255, 255, 255, 0.1);
+    --container-border: 1px solid rgba(255, 255, 255, 0.2);
+    --button-bg: rgba(255, 255, 255, 0.15);
+    --button-hover-bg: rgba(255, 255, 255, 0.25);
+    --input-bg: rgba(255, 255, 255, 0.1);
+    --input-border: 1px solid rgba(255, 255, 255, 0.2);
+    --checkbox-bg: rgba(255, 255, 255, 0.1);
+    --checkbox-border: 1px solid rgba(255, 255, 255, 0.2);
+    --tooltip-bg: rgba(255, 255, 255, 0.2);
+    --tooltip-text: white;
+    --shadow-color: rgba(31, 38, 135, 0.2);
+}
+
+/* Темная тема */
+body.dark-theme {
+    --text-color: rgba(255, 255, 255, 0.9);
+    --container-bg: rgba(0, 0, 0, 0.2);
+    --container-border: 1px solid rgba(255, 255, 255, 0.1);
+    --button-bg: rgba(0, 0, 0, 0.2);
+    --button-hover-bg: rgba(0, 0, 0, 0.3);
+    --input-bg: rgba(0, 0, 0, 0.2);
+    --input-border: 1px solid rgba(255, 255, 255, 0.1);
+    --checkbox-bg: rgba(0, 0, 0, 0.2);
+    --checkbox-border: 1px solid rgba(255, 255, 255, 0.1);
+    --tooltip-bg: rgba(0, 0, 0, 0.3);
+    --tooltip-text: rgba(255, 255, 255, 0.9);
+    --shadow-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Базовые стили */
 body {
     width: 320px;
     min-height: 200px;
     font-family: 'Segoe UI', system-ui, sans-serif;
-    background: linear-gradient(135deg, var(--accent-color, #44a561) 0%, #186910 100%);
+    background: var(--bg-gradient);
     margin: 0;
     padding: 0;
-    color: white;
-    --accent-color: #44a561;
+    color: var(--text-color);
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
 .glass-container {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--container-bg);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: var(--container-border);
     box-shadow:
-        0 8px 32px 0 rgba(31, 38, 135, 0.2),
+        0 8px 32px 0 var(--shadow-color),
         inset 0 0 0 1px rgba(255, 255, 255, 0.1);
     padding: 15px;
     width: 100%;
@@ -23,7 +58,7 @@ body {
     overflow: hidden;
 }
 
-/* Tabs */
+/* Вкладки */
 .tabs {
     display: flex;
     margin-bottom: 15px;
@@ -37,7 +72,7 @@ body {
     flex: 1;
     background: transparent;
     border: none;
-    color: white;
+    color: var(--text-color);
     padding: 8px 12px;
     border-radius: 8px;
     cursor: pointer;
@@ -51,6 +86,10 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+body.dark-theme .tab-button.active {
+    background: rgba(0, 0, 0, 0.3);
+}
+
 .tab-content {
     display: none;
 }
@@ -59,15 +98,7 @@ body {
     display: block;
 }
 
-h1 {
-    text-align: center;
-    margin: 0 0 15px 0;
-    font-size: 1.3rem;
-    font-weight: 600;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-}
-
-/* Buttons & Lists */
+/* Кнопки и списки */
 .glass-list {
     list-style: none;
     padding: 0;
@@ -75,12 +106,12 @@ h1 {
 }
 
 .glass-button {
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--button-bg);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: var(--container-border);
     border-radius: 10px;
-    color: white;
+    color: var(--text-color);
     padding: 12px 15px;
     margin: 8px 0;
     width: 100%;
@@ -96,9 +127,13 @@ h1 {
 }
 
 .glass-button:hover {
-    background: rgba(255, 255, 255, 0.25);
+    background: var(--button-hover-bg);
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+body.dark-theme .glass-button:hover {
+    background: rgba(0, 0, 0, 0.4);
 }
 
 .glass-button:active {
@@ -112,14 +147,14 @@ h1 {
     opacity: 0.9;
 }
 
-/* Settings */
+/* Настройки */
 .setting-group {
     margin-bottom: 20px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--container-bg);
     backdrop-filter: blur(10px);
     border-radius: 12px;
     padding: 15px;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: var(--container-border);
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
@@ -128,9 +163,10 @@ h1 {
     margin-bottom: 12px;
     font-weight: 500;
     font-size: 14px;
+    color: var(--text-color);
 }
 
-/* Theme Selector */
+/* Выбор темы */
 .theme-options {
     display: flex;
     gap: 10px;
@@ -140,7 +176,7 @@ h1 {
     flex: 1;
     background: transparent;
     border: none;
-    color: white;
+    color: var(--text-color);
     padding: 0;
     cursor: pointer;
     transition: transform 0.2s;
@@ -196,60 +232,7 @@ h1 {
     background: linear-gradient(135deg, #f5f7fa 50%, #2c3e50 50%);
 }
 
-/* Color Picker */
-.color-picker-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.color-picker {
-    width: 50px;
-    height: 30px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    border-radius: 6px;
-    overflow: hidden;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    flex-shrink: 0;
-}
-
-.color-picker::-webkit-color-swatch {
-    border: none;
-    border-radius: 4px;
-}
-
-.color-picker::-webkit-color-swatch-wrapper {
-    padding: 0;
-}
-
-.color-presets {
-    display: flex;
-    gap: 8px;
-    flex-grow: 1;
-}
-
-.color-preset {
-    width: 24px;
-    height: 24px;
-    border-radius: 50%;
-    border: 2px solid transparent;
-    background: var(--color);
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.color-preset:hover {
-    transform: scale(1.1);
-    border-color: rgba(255, 255, 255, 0.5);
-}
-
-.color-preset.active {
-    border-color: white;
-    box-shadow: 0 0 0 2px var(--color);
-}
-
+/* Поисковые системы */
 .search-engines-container {
     display: flex;
     flex-direction: column;
@@ -261,16 +244,20 @@ h1 {
     display: flex;
     align-items: center;
     padding: 8px 12px;
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--container-bg);
     border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: var(--container-border);
     backdrop-filter: blur(5px);
     transition: all 0.3s ease;
     cursor: pointer;
 }
 
 .search-engine-option:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--button-hover-bg);
+}
+
+body.dark-theme .search-engine-option:hover {
+    background: rgba(0, 0, 0, 0.3);
 }
 
 .search-checkbox {
@@ -279,8 +266,8 @@ h1 {
     height: 16px;
     appearance: none;
     -webkit-appearance: none;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: var(--checkbox-bg);
+    border: var(--checkbox-border);
     border-radius: 4px;
     cursor: pointer;
     position: relative;
@@ -306,46 +293,10 @@ h1 {
 
 .search-engine-label {
     font-size: 14px;
-    color: white;
+    color: var(--text-color);
 }
 
-/* GitHub Link */
-.github-link {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.github-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    color: rgba(255, 255, 255, 0.7);
-    text-decoration: none;
-    font-size: 13px;
-    padding: 6px 10px;
-    border-radius: 6px;
-    transition: all 0.3s;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.github-button:hover {
-    color: white;
-    background: rgba(255, 255, 255, 0.1);
-    text-decoration: none;
-}
-
-.github-icon {
-    width: 16px;
-    height: 16px;
-    opacity: 0.7;
-    transition: opacity 0.3s;
-}
-
-.github-button:hover .github-icon {
-    opacity: 1;
-}
-
+/* Поля ввода */
 .login-fields {
     display: flex;
     flex-direction: column;
@@ -353,11 +304,11 @@ h1 {
 }
 
 .glass-input {
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: var(--input-bg);
+    border: var(--input-border);
     border-radius: 8px;
     padding: 10px 12px;
-    color: white;
+    color: var(--text-color);
     font-size: 14px;
     outline: none;
     transition: all 0.3s;
@@ -373,6 +324,7 @@ h1 {
     color: rgba(255, 255, 255, 0.5);
 }
 
+/* Чекбоксы */
 .custom-checkbox {
     display: flex;
     align-items: center;
@@ -397,15 +349,15 @@ h1 {
     left: 0;
     height: 20px;
     width: 20px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: var(--checkbox-bg);
+    border: var(--checkbox-border);
     border-radius: 6px;
     backdrop-filter: blur(5px);
     transition: all 0.3s;
 }
 
 .custom-checkbox:hover .checkmark {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: var(--button-hover-bg);
 }
 
 .custom-checkbox input:checked~.checkmark {
@@ -433,19 +385,133 @@ h1 {
 .checkbox-label {
     margin-left: 8px;
     font-size: 14px;
+    color: var(--text-color);
 }
 
+/* Tooltip */
+.tooltip-icon {
+    position: relative;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    margin-left: 8px;
+    border-radius: 50%;
+    background-color: var(--tooltip-bg);
+    color: var(--tooltip-text);
+    font-size: 12px;
+    text-align: center;
+    line-height: 16px;
+    cursor: help;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.tooltip-icon:hover {
+    background-color: var(--accent-color);
+    color: white;
+}
+
+.tooltip-text {
+    visibility: hidden;
+    width: 200px;
+    background: var(--tooltip-bg);
+    color: var(--tooltip-text);
+    text-align: center;
+    border-radius: 12px;
+    padding: 12px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    transform: translateX(-50%);
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    font-size: 12px;
+    font-weight: normal;
+    pointer-events: none;
+    backdrop-filter: blur(10px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    line-height: 1.4;
+}
+
+.tooltip-icon:hover .tooltip-text {
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(-50%) translateY(-5px);
+}
+
+/* Кнопка сохранения с анимацией */
 #save-settings {
+    position: relative;
+    overflow: hidden;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     margin-top: 20px;
 }
 
+#save-text,
+#saved-text {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    position: absolute;
+}
+
+#save-text {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#saved-text {
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+#save-settings.saved #save-text {
+    opacity: 0;
+    transform: translateY(-10px);
+}
+
+#save-settings.saved #saved-text {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* GitHub ссылка */
+.github-list-item {
+    margin-top: 10px;
+}
+
+.github-button {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+.github-button:hover {
+    color: white;
+}
+
+.github-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+    opacity: 0.9;
+}
+
+/* Статусные сообщения */
 .status-message {
     margin-top: 10px;
     padding: 8px 12px;
     border-radius: 6px;
     font-size: 13px;
     display: none;
+    animation: fadeIn 0.3s ease;
 }
 
 .status-message.success {
@@ -460,7 +526,7 @@ h1 {
     display: block;
 }
 
-/* Animations */
+/* Анимации */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -470,5 +536,17 @@ h1 {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
     }
 }

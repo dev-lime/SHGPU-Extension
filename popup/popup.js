@@ -51,16 +51,20 @@ document.addEventListener('DOMContentLoaded', function () {
     const usernameInput = document.getElementById('shgpu-username');
     const passwordInput = document.getElementById('shgpu-password');
     const autoLoginCheckbox = document.getElementById('auto-login');
+    const delayLoginCheckbox = document.getElementById('delay-login');
     const saveSettingsButton = document.getElementById('save-settings');
     const loginStatus = document.getElementById('login-status');
+    const saveText = document.getElementById('save-text');
+    const savedText = document.getElementById('saved-text');
 
     // Обработчики изменений для полей входа
-    if (usernameInput && passwordInput && autoLoginCheckbox) {
+    if (usernameInput && passwordInput && autoLoginCheckbox && delayLoginCheckbox) {
         [usernameInput, passwordInput].forEach(input => {
             input.addEventListener('input', enableSaveButton);
         });
 
         autoLoginCheckbox.addEventListener('change', enableSaveButton);
+        delayLoginCheckbox.addEventListener('change', enableSaveButton);
     }
 
     // Сохранение всех настроек
@@ -69,6 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const username = usernameInput?.value;
             const password = passwordInput?.value;
             const autoLogin = autoLoginCheckbox?.checked;
+            const delayLogin = delayLoginCheckbox?.checked;
 
             // Получаем текущие значения поисковиков
             const searchEngines = Array.from(document.querySelectorAll('.search-checkbox:checked'))
@@ -83,11 +88,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 shgpuUsername: username,
                 shgpuPassword: password,
                 autoLogin: autoLogin,
+                delayLogin: delayLogin,
                 searchEngines: searchEngines,
                 theme: theme
             }, function () {
-                showLoginStatus('Все настройки сохранены', 'success');
+                // Показываем "Настройки сохранены" временно
+                saveSettingsButton.classList.add('saved');
+                setTimeout(() => {
+                    saveSettingsButton.classList.remove('saved');
+                }, 2000);
                 saveSettingsButton.disabled = true;
+
+                setTimeout(() => {
+                    saveText.style.display = 'inline';
+                    savedText.style.display = 'none';
+                }, 2000);
             });
         });
     }
@@ -99,7 +114,8 @@ document.addEventListener('DOMContentLoaded', function () {
         'searchEngines',
         'shgpuUsername',
         'shgpuPassword',
-        'autoLogin'
+        'autoLogin',
+        'delayLogin'
     ], function (data) {
         // Theme
         if (data.theme) {
@@ -118,6 +134,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (data.shgpuUsername && usernameInput) usernameInput.value = data.shgpuUsername;
         if (data.shgpuPassword && passwordInput) passwordInput.value = data.shgpuPassword;
         if (data.autoLogin && autoLoginCheckbox) autoLoginCheckbox.checked = data.autoLogin;
+        if (data.delayLogin && delayLoginCheckbox) delayLoginCheckbox.checked = data.delayLogin;
     });
 
     // Функция включения кнопки сохранения
@@ -129,7 +146,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Apply theme function
     function applyTheme(theme) {
-        if (theme === 'dark') {
+        if (theme === 'system') {
+            // Проверяем системные настройки
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.body.classList.add('dark-theme');
+            } else {
+                document.body.classList.remove('dark-theme');
+            }
+        } else if (theme === 'dark') {
             document.body.classList.add('dark-theme');
         } else {
             document.body.classList.remove('dark-theme');
@@ -147,5 +171,16 @@ document.addEventListener('DOMContentLoaded', function () {
         setTimeout(() => {
             loginStatus.style.display = 'none';
         }, 3000);
+    }
+
+    // Обработчик изменения системной темы
+    if (window.matchMedia) {
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            chrome.storage.sync.get(['theme'], function (data) {
+                if (data.theme === 'system') {
+                    applyTheme('system');
+                }
+            });
+        });
     }
 });
