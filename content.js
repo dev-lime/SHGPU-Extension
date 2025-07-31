@@ -391,91 +391,102 @@ function showSearchFrame(url, questionText, container) {
 function addSearch() {
 	const questions = document.querySelectorAll('.que.multichoice, .que.truefalse, .que.shortanswer, .que.essay');
 
-	questions.forEach(question => {
-		const questionText = getFullQuestionText(question);
+	// Получаем настройки поисковых систем из хранилища
+	chrome.storage.sync.get(['searchEngines'], function (data) {
+		const enabledEngines = data.searchEngines || ['ai', 'google', 'yandex']; // По умолчанию все включены
 
-		const buttonsContainer = document.createElement('div');
-		buttonsContainer.style.margin = '15px 0';
-		buttonsContainer.style.display = 'flex';
-		buttonsContainer.style.gap = '10px';
-		buttonsContainer.style.alignItems = 'center';
+		questions.forEach(question => {
+			// Удаляем предыдущие контейнеры с кнопками, если они есть
+			const existingButtons = question.querySelectorAll('.search-buttons-container');
+			existingButtons.forEach(container => container.remove());
 
-		// Стиль для кнопок
-		const buttonStyle = `
-            padding: 8px 16px;
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 8px;
-            color: #333;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            user-select: none;
-        `;
+			const questionText = getFullQuestionText(question);
+			const buttonsContainer = document.createElement('div');
+			buttonsContainer.className = 'search-buttons-container'; // Добавляем класс для идентификации
+			buttonsContainer.style.margin = '15px 0';
+			buttonsContainer.style.display = 'flex';
+			buttonsContainer.style.gap = '10px';
+			buttonsContainer.style.alignItems = 'center';
 
-		const hoverStyle = `
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-1px);
-            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-        `;
+			const buttonStyle = `
+                padding: 8px 16px;
+                background: rgba(255, 255, 255, 0.2);
+                backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                border-radius: 8px;
+                color: #333;
+                font-size: 14px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                user-select: none;
+            `;
 
-		// Кнопка для открытия окна
-		const modalButton = document.createElement('button');
-		modalButton.textContent = 'AI';
-		modalButton.style.cssText = buttonStyle;
-		modalButton.addEventListener('mouseenter', () => {
-			modalButton.style.cssText = buttonStyle + hoverStyle;
-		});
-		modalButton.addEventListener('mouseleave', () => {
-			modalButton.style.cssText = buttonStyle;
-		});
-		modalButton.addEventListener('click', (e) => {
-			e.preventDefault();
-			createSearchModal(questionText);
-		});
+			const hoverStyle = `
+                background: rgba(255, 255, 255, 0.3);
+                transform: translateY(-1px);
+                box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+            `;
 
-		// Кнопка для поиска в Google
-		const googleButton = document.createElement('button');
-		googleButton.textContent = 'Google';
-		googleButton.style.cssText = buttonStyle;
-		googleButton.addEventListener('mouseenter', () => {
-			googleButton.style.cssText = buttonStyle + hoverStyle;
-		});
-		googleButton.addEventListener('mouseleave', () => {
-			googleButton.style.cssText = buttonStyle;
-		});
-		googleButton.addEventListener('click', (e) => {
-			e.preventDefault();
-			window.open(`https://www.google.com/search?q=${encodeURIComponent(questionText)}`, '_blank');
-		});
+			// Создаем только разрешенные кнопки
+			if (enabledEngines.includes('ai')) {
+				const modalButton = createSearchButton('AI', buttonStyle, hoverStyle, () => {
+					createSearchModal(questionText);
+				});
+				buttonsContainer.appendChild(modalButton);
+			}
 
-		// Кнопка для поиска в Яндекс
-		const yandexButton = document.createElement('button');
-		yandexButton.textContent = 'Яндекс';
-		yandexButton.style.cssText = buttonStyle;
-		yandexButton.addEventListener('mouseenter', () => {
-			yandexButton.style.cssText = buttonStyle + hoverStyle;
-		});
-		yandexButton.addEventListener('mouseleave', () => {
-			yandexButton.style.cssText = buttonStyle;
-		});
-		yandexButton.addEventListener('click', (e) => {
-			e.preventDefault();
-			window.open(`https://yandex.ru/search/?text=${encodeURIComponent(questionText)}`, '_blank');
-		});
+			if (enabledEngines.includes('google')) {
+				const googleButton = createSearchButton('Google', buttonStyle, hoverStyle, () => {
+					window.open(`https://www.google.com/search?q=${encodeURIComponent(questionText)}`, '_blank');
+				});
+				buttonsContainer.appendChild(googleButton);
+			}
 
-		buttonsContainer.appendChild(modalButton);
-		buttonsContainer.appendChild(googleButton);
-		buttonsContainer.appendChild(yandexButton);
+			if (enabledEngines.includes('yandex')) {
+				const yandexButton = createSearchButton('Яндекс', buttonStyle, hoverStyle, () => {
+					window.open(`https://yandex.ru/search/?text=${encodeURIComponent(questionText)}`, '_blank');
+				});
+				buttonsContainer.appendChild(yandexButton);
+			}
 
-		const questionContent = question.querySelector('.content');
-		if (questionContent) {
-			questionContent.appendChild(buttonsContainer);
-		}
+			const questionContent = question.querySelector('.content');
+			if (questionContent && buttonsContainer.children.length > 0) {
+				questionContent.appendChild(buttonsContainer);
+			}
+		});
 	});
 }
+
+// Вспомогательная функция для создания кнопок
+function createSearchButton(text, style, hoverStyle, onClick) {
+	const button = document.createElement('button');
+	button.textContent = text;
+	button.style.cssText = style;
+
+	button.addEventListener('mouseenter', () => {
+		button.style.cssText = style + hoverStyle;
+	});
+
+	button.addEventListener('mouseleave', () => {
+		button.style.cssText = style;
+	});
+
+	button.addEventListener('click', (e) => {
+		e.preventDefault();
+		onClick();
+	});
+
+	return button;
+}
+
+// Слушаем изменения в хранилище
+chrome.storage.onChanged.addListener(function (changes, namespace) {
+	if (changes.searchEngines) {
+		// Пересоздаем кнопки поиска при изменении настроек
+		addSearch();
+	}
+});
 
 // Если сейчас страница входа ШГПУ
 if (window.location.href.includes('edu.shspu.ru/login/index.php')) {
