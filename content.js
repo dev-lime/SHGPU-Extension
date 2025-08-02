@@ -275,9 +275,10 @@ function getFullQuestionText(questionElement) {
 	return fullText.trim();
 }
 
-async function queryOpenAI(questionText, apiKey) {
+// Функции для работы с API
+async function queryChatGPT(questionText, apiKey) {
 	try {
-		const prompt = `Это вопрос из теста с вариантами ответов. Проанализируй вопрос и варианты ответов, и предложи наиболее вероятные правильные ответы с кратким объяснением. Если вопрос предполагает развернутый ответ, сформулируй его.\n\n${questionText}`;
+		const prompt = `Это вопрос из теста с вариантами ответов. Проанализируй вопрос и варианты ответов, и предложи наиболее вероятные правильные ответы с кратким объяснением.\n\n${questionText}`;
 
 		const response = await fetch('https://api.openai.com/v1/chat/completions', {
 			method: 'POST',
@@ -301,14 +302,45 @@ async function queryOpenAI(questionText, apiKey) {
 		}
 
 		const data = await response.json();
-		return data.choices[0]?.message?.content || "Не удалось получить ответ от нейросети.";
+		return data.choices[0]?.message?.content || "Не удалось получить ответ от ChatGPT.";
 	} catch (error) {
 		console.error("Ошибка запроса к OpenAI:", error);
-		return `Ошибка при запросе к нейросети: ${error.message}`;
+		return `Ошибка при запросе к ChatGPT: ${error.message}`;
 	}
 }
 
-function createSearchModal(questionText) {
+async function queryGemini(questionText, apiKey) {
+	try {
+		const prompt = `Проанализируй вопрос теста и варианты ответов, выдели наиболее вероятные правильные ответы с кратким объяснением:\n\n${questionText}`;
+
+		const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${apiKey}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				contents: [{
+					parts: [{
+						text: prompt
+					}]
+				}]
+			})
+		});
+
+		if (!response.ok) {
+			throw new Error(`Ошибка API: ${response.status}`);
+		}
+
+		const data = await response.json();
+		return data.candidates?.[0]?.content?.parts?.[0]?.text || "Не удалось получить ответ от Gemini.";
+	} catch (error) {
+		console.error("Ошибка запроса к Gemini:", error);
+		return `Ошибка при запросе к Gemini: ${error.message}`;
+	}
+}
+
+// Модальное окно с выбором AI
+function createAIModal(questionText, engine) {
 	const overlay = document.createElement('div');
 	overlay.style.position = 'fixed';
 	overlay.style.top = '0';
@@ -346,7 +378,7 @@ function createSearchModal(questionText) {
 	header.style.alignItems = 'center';
 
 	const title = document.createElement('h3');
-	title.textContent = 'Поиск ответа с помощью AI';
+	title.textContent = `Поиск ответа с помощью ${engine === 'gemini' ? 'Google Gemini' : 'ChatGPT'}`;
 	title.style.margin = '0';
 	title.style.fontSize = '18px';
 
@@ -381,7 +413,6 @@ function createSearchModal(questionText) {
 	contentArea.style.overflow = 'auto';
 	contentArea.style.padding = '16px';
 
-	header.appendChild(closeButton);
 	modal.appendChild(header);
 	modal.appendChild(questionPreview);
 	content.appendChild(contentArea);
@@ -389,14 +420,14 @@ function createSearchModal(questionText) {
 	overlay.appendChild(modal);
 	document.body.appendChild(overlay);
 
-	showAiResponse(questionText, contentArea);
+	showAIResponse(questionText, contentArea, engine);
 }
 
-async function showAiResponse(questionText, container) {
+async function showAIResponse(questionText, container, engine) {
 	container.innerHTML = `
         <div style="display: flex; flex-direction: column; gap: 16px;">
             <div style="background: #f5f5f5; padding: 16px; border-radius: 6px;">
-                <h4 style="margin-top: 0; color: #333;">Ответ нейросети:</h4>
+                <h4 style="margin-top: 0; color: #333;">Ответ ${engine === 'gemini' ? 'Gemini' : 'ChatGPT'}:</h4>
                 <div id="ai-response" style="line-height: 1.5;">
                     <div style="display: flex; justify-content: center; padding: 20px;">
                         <div class="spinner"></div>
@@ -412,7 +443,7 @@ async function showAiResponse(questionText, container) {
             width: 40px;
             height: 40px;
             border: 4px solid #f3f3f3;
-            border-top: 4px solid #3498db;
+            border-top: 4px solid ${engine === 'gemini' ? '#4285F4' : '#10a37f'};
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -424,29 +455,32 @@ async function showAiResponse(questionText, container) {
 	container.appendChild(spinnerStyle);
 
 	try {
-		// Получаем API ключ из хранилища
 		const data = await new Promise(resolve => {
-			chrome.storage.sync.get(['aiApiKey'], resolve);
+			chrome.storage.sync.get([`${engine}ApiKey`], resolve);
 		});
 
-		if (!data.aiApiKey) {
+		const apiKey = data[`${engine}ApiKey`];
+		if (!apiKey) {
 			document.getElementById('ai-response').innerHTML = `
-                <p style="color: #d32f2f;">API ключ не найден. Пожалуйста, введите ваш OpenAI API ключ в настройках расширения.</p>
-                <p>Вы можете получить ключ на <a href="https://platform.openai.com/api-keys" target="_blank" style="color: #4a90e2;">platform.openai.com/api-keys</a></p>
+                <p style="color: #d32f2f;">API ключ для ${engine === 'gemini' ? 'Gemini' : 'ChatGPT'} не найден.</p>
+                <p>Пожалуйста, введите ваш ${engine === 'gemini' ? 'Google Gemini' : 'OpenAI'} API ключ в настройках расширения.</p>
             `;
 			return;
 		}
 
-		const response = await queryOpenAI(questionText, data.aiApiKey);
+		const response = engine === 'gemini'
+			? await queryGemini(questionText, apiKey)
+			: await queryChatGPT(questionText, apiKey);
+
 		document.getElementById('ai-response').innerHTML = `
             <div style="white-space: pre-wrap;">${response}</div>
             <div style="margin-top: 20px; font-size: 12px; color: #666; border-top: 1px solid #eee; padding-top: 10px;">
-                Ответ сгенерирован с помощью OpenAI API. Только для справочных целей.
+                Ответ сгенерирован с помощью ${engine === 'gemini' ? 'Google Gemini API' : 'OpenAI API'}. Только для справочных целей.
             </div>
         `;
 	} catch (error) {
 		document.getElementById('ai-response').innerHTML = `
-            <p style="color: #d32f2f;">Ошибка при запросе к нейросети:</p>
+            <p style="color: #d32f2f;">Ошибка при запросе к ${engine === 'gemini' ? 'Gemini' : 'ChatGPT'}:</p>
             <p>${error.message}</p>
             <p>Проверьте ваш API ключ и подключение к интернету.</p>
         `;
@@ -456,61 +490,108 @@ async function showAiResponse(questionText, container) {
 function addSearch() {
 	const questions = document.querySelectorAll('.que.multichoice, .que.truefalse, .que.shortanswer, .que.essay');
 
-	// Получаем настройки поисковых систем из хранилища
-	chrome.storage.sync.get(['searchEngines'], function (data) {
-		const enabledEngines = data.searchEngines || ['ai', 'google', 'yandex']; // По умолчанию все включены
+	chrome.storage.sync.get(['searchEngines', 'chatgptApiKey', 'geminiApiKey'], function (data) {
+		let enabledEngines = data.searchEngines || ['google', 'yandex'];
+
+		// Проверяем наличие API ключей для нейросетей
+		if (enabledEngines.includes('chatgpt') && !data.chatgptApiKey) {
+			enabledEngines = enabledEngines.filter(engine => engine !== 'chatgpt');
+		}
+		if (enabledEngines.includes('gemini') && !data.geminiApiKey) {
+			enabledEngines = enabledEngines.filter(engine => engine !== 'gemini');
+		}
 
 		questions.forEach(question => {
-			// Удаляем предыдущие контейнеры с кнопками, если они есть
 			const existingButtons = question.querySelectorAll('.search-buttons-container');
 			existingButtons.forEach(container => container.remove());
 
 			const questionText = getFullQuestionText(question);
 			const buttonsContainer = document.createElement('div');
-			buttonsContainer.className = 'search-buttons-container'; // Добавляем класс для идентификации
+			buttonsContainer.className = 'search-buttons-container';
 			buttonsContainer.style.margin = '15px 0';
 			buttonsContainer.style.display = 'flex';
 			buttonsContainer.style.gap = '10px';
 			buttonsContainer.style.alignItems = 'center';
+			buttonsContainer.style.flexWrap = 'wrap';
 
-			const buttonStyle = `
+			// Стили для кнопок
+			const baseButtonStyle = `
                 padding: 8px 16px;
-                background: rgba(255, 255, 255, 0.2);
-                backdrop-filter: blur(10px);
-                border: 1px solid rgba(255, 255, 255, 0.3);
                 border-radius: 8px;
-                color: #333;
                 font-size: 14px;
                 cursor: pointer;
                 transition: all 0.3s ease;
                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
                 user-select: none;
+                border: none;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            `;
+
+			const chatGPTButtonStyle = baseButtonStyle + `
+                background: #10a37f;
+                color: white;
+            `;
+
+			const geminiButtonStyle = baseButtonStyle + `
+                background: #4285F4;
+                color: white;
+            `;
+
+			const googleButtonStyle = baseButtonStyle + `
+                background: #f1f1f1;
+                color: #333;
+            `;
+
+			const yandexButtonStyle = baseButtonStyle + `
+                background: #fc3f1d;
+                color: white;
             `;
 
 			const hoverStyle = `
-                background: rgba(255, 255, 255, 0.3);
                 transform: translateY(-1px);
                 box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
             `;
 
-			if (enabledEngines.includes('ai')) {
-				const modalButton = createSearchButton('AI', buttonStyle, hoverStyle, () => {
-					createSearchModal(questionText);
-				});
-				buttonsContainer.appendChild(modalButton);
+			// Создаем кнопки
+			if (enabledEngines.includes('chatgpt')) {
+				const chatGPTButton = createSearchButton(
+					'ChatGPT',
+					chatGPTButtonStyle,
+					hoverStyle,
+					() => createAIModal(questionText, 'chatgpt')
+				);
+				buttonsContainer.appendChild(chatGPTButton);
+			}
+
+			if (enabledEngines.includes('gemini')) {
+				const geminiButton = createSearchButton(
+					'Gemini',
+					geminiButtonStyle,
+					hoverStyle,
+					() => createAIModal(questionText, 'gemini')
+				);
+				buttonsContainer.appendChild(geminiButton);
 			}
 
 			if (enabledEngines.includes('google')) {
-				const googleButton = createSearchButton('Google', buttonStyle, hoverStyle, () => {
-					window.open(`https://www.google.com/search?q=${encodeURIComponent(questionText)}`, '_blank');
-				});
+				const googleButton = createSearchButton(
+					'Google',
+					googleButtonStyle,
+					hoverStyle,
+					() => window.open(`https://www.google.com/search?q=${encodeURIComponent(questionText)}`, '_blank')
+				);
 				buttonsContainer.appendChild(googleButton);
 			}
 
 			if (enabledEngines.includes('yandex')) {
-				const yandexButton = createSearchButton('Яндекс', buttonStyle, hoverStyle, () => {
-					window.open(`https://yandex.ru/search/?text=${encodeURIComponent(questionText)}`, '_blank');
-				});
+				const yandexButton = createSearchButton(
+					'Яндекс',
+					yandexButtonStyle,
+					hoverStyle,
+					() => window.open(`https://yandex.ru/search/?text=${encodeURIComponent(questionText)}`, '_blank')
+				);
 				buttonsContainer.appendChild(yandexButton);
 			}
 

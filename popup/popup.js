@@ -67,10 +67,16 @@ document.addEventListener('DOMContentLoaded', function () {
         delayLoginCheckbox.addEventListener('change', enableSaveButton);
     }
 
-    // Обработчик изменения API ключа
-    const aiApiKeyInput = document.getElementById('ai-api-key');
-    if (aiApiKeyInput) {
-        aiApiKeyInput.addEventListener('input', enableSaveButton);
+    // Обработчики изменения API ключей
+    const chatgptApiKeyInput = document.getElementById('chatgpt-api-key');
+    const geminiApiKeyInput = document.getElementById('gemini-api-key');
+
+    if (chatgptApiKeyInput) {
+        chatgptApiKeyInput.addEventListener('input', enableSaveButton);
+    }
+
+    if (geminiApiKeyInput) {
+        geminiApiKeyInput.addEventListener('input', enableSaveButton);
     }
 
     // Сохранение всех настроек
@@ -80,14 +86,18 @@ document.addEventListener('DOMContentLoaded', function () {
             const password = passwordInput?.value;
             const autoLogin = autoLoginCheckbox?.checked;
             const delayLogin = delayLoginCheckbox?.checked;
+            const chatgptApiKey = chatgptApiKeyInput?.value;
+            const geminiApiKey = geminiApiKeyInput?.value;
 
+            // Получаем текущие значения поисковиков
             const searchEngines = Array.from(document.querySelectorAll('.search-checkbox:checked'))
                 .map(cb => cb.value);
-            const aiApiKey = document.getElementById('ai-api-key')?.value;
 
+            // Получаем текущую тему
             const activeThemeOption = document.querySelector('.theme-option.active');
             const theme = activeThemeOption?.dataset.theme;
 
+            // Сохраняем все настройки
             chrome.storage.sync.set({
                 shgpuUsername: username,
                 shgpuPassword: password,
@@ -95,9 +105,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 delayLogin: delayLogin,
                 searchEngines: searchEngines,
                 theme: theme,
-                aiApiKey: aiApiKey
+                chatgptApiKey: chatgptApiKey,
+                geminiApiKey: geminiApiKey
             }, function () {
-                // Показывает "Настройки сохранены" временно
+                // Показываем "Настройки сохранены" временно
                 saveSettingsButton.classList.add('saved');
                 setTimeout(() => {
                     saveSettingsButton.classList.remove('saved');
@@ -121,7 +132,8 @@ document.addEventListener('DOMContentLoaded', function () {
         'shgpuPassword',
         'autoLogin',
         'delayLogin',
-        'aiApiKey'
+        'chatgptApiKey',
+        'geminiApiKey'
     ], function (data) {
         // Theme
         if (data.theme) {
@@ -142,9 +154,12 @@ document.addEventListener('DOMContentLoaded', function () {
         if (data.autoLogin && autoLoginCheckbox) autoLoginCheckbox.checked = data.autoLogin;
         if (data.delayLogin && delayLoginCheckbox) delayLoginCheckbox.checked = data.delayLogin;
 
-        // API key
-        if (data.aiApiKey && document.getElementById('ai-api-key')) {
-            document.getElementById('ai-api-key').value = data.aiApiKey;
+        // API ключи
+        if (data.chatgptApiKey && chatgptApiKeyInput) {
+            chatgptApiKeyInput.value = data.chatgptApiKey;
+        }
+        if (data.geminiApiKey && geminiApiKeyInput) {
+            geminiApiKeyInput.value = data.geminiApiKey;
         }
     });
 

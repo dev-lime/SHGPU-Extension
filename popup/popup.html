@@ -70,28 +70,35 @@
                 <label class="setting-label">Искать ответы в...</label>
                 <div class="search-engines-container">
                     <label class="search-engine-option">
-                        <input type="checkbox" class="search-checkbox" value="yandex">
-                        <span class="search-engine-label">Яндекс</span>
+                        <input type="checkbox" class="search-checkbox" value="chatgpt">
+                        <span class="search-engine-label">ChatGPT</span>
+                    </label>
+                    <label class="search-engine-option">
+                        <input type="checkbox" class="search-checkbox" value="gemini">
+                        <span class="search-engine-label">Gemini</span>
                     </label>
                     <label class="search-engine-option">
                         <input type="checkbox" class="search-checkbox" value="google">
                         <span class="search-engine-label">Google</span>
                     </label>
                     <label class="search-engine-option">
-                        <input type="checkbox" class="search-checkbox" value="ai">
-                        <span class="search-engine-label">AI (в разработке)</span>
+                        <input type="checkbox" class="search-checkbox" value="yandex">
+                        <span class="search-engine-label">Яндекс</span>
                     </label>
                 </div>
             </div>
 
             <div class="setting-group">
-                <label class="setting-label">API ключ для нейросети</label>
+                <label class="setting-label">API ключи для нейросетей</label>
                 <div class="login-fields">
-                    <input type="password" id="ai-api-key" placeholder="Введите ваш OpenAI API ключ"
+                    <input type="password" id="chatgpt-api-key" placeholder="OpenAI API ключ (для ChatGPT)"
                         class="glass-input">
+                    <input type="password" id="gemini-api-key" placeholder="Google Gemini API ключ" class="glass-input">
                     <div style="font-size: 12px; color: #666; margin-top: 5px;">
-                        Ключ сохраняется локально и используется только для ваших запросов.
+                        Ключи сохраняются локально и используются только для ваших запросов.
                         <a href="https://platform.openai.com/api-keys" target="_blank" style="color: #4a90e2;">Получить
+                            OpenAI ключ</a> |
+                        <a href="https://ai.google.dev/" target="_blank" style="color: #4a90e2;">Получить Gemini
                             ключ</a>
                     </div>
                 </div>
