@@ -550,3 +550,66 @@ body.dark-theme .search-engine-option:hover {
         transform: scale(1);
     }
 }
+
+/* Анимация раскрытия карточки поисковой системы */
+.search-engine-option {
+    transition: all 0.3s ease;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.search-engine-option.expanded {
+    padding-bottom: 12px;
+}
+
+.api-key-container {
+    max-height: 0;
+    opacity: 0;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    overflow: hidden;
+    margin-left: 26px;
+    /* Отступ для выравнивания с текстом */
+    width: calc(100% - 26px);
+}
+
+.search-engine-option.expanded .api-key-container {
+    max-height: 100px;
+    opacity: 1;
+    margin-top: 8px;
+}
+
+.api-key-input {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    padding: 8px 12px;
+    color: var(--text-color);
+    font-size: 13px;
+    outline: none;
+    transition: all 0.3s;
+    backdrop-filter: blur(5px);
+}
+
+.api-key-input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 2px rgba(68, 165, 97, 0.3);
+}
+
+.api-key-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+}
+
+.api-key-link {
+    display: block;
+    font-size: 11px;
+    margin-top: 4px;
+    color: rgba(255, 255, 255, 0.6);
+    text-decoration: none;
+}
+
+.api-key-link:hover {
+    color: #4a90e2;
+}

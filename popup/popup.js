@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
     themeOptions.forEach(option => {
         option.addEventListener('click', function () {
             const theme = this.dataset.theme;
-            chrome.storage.sync.set({ theme: theme });
+            saveSettings({ theme });
             applyTheme(theme);
 
             themeOptions.forEach(opt => opt.classList.remove('active'));
@@ -42,7 +42,8 @@ document.addEventListener('DOMContentLoaded', function () {
         checkbox.addEventListener('change', function () {
             const searchEngines = Array.from(document.querySelectorAll('.search-checkbox:checked'))
                 .map(cb => cb.value);
-            chrome.storage.sync.set({ searchEngines: searchEngines });
+            saveSettings({ searchEngines });
+            toggleApiKeyFields(this);
             enableSaveButton();
         });
     });
@@ -82,44 +83,19 @@ document.addEventListener('DOMContentLoaded', function () {
     // Сохранение всех настроек
     if (saveSettingsButton) {
         saveSettingsButton.addEventListener('click', function () {
-            const username = usernameInput?.value;
-            const password = passwordInput?.value;
-            const autoLogin = autoLoginCheckbox?.checked;
-            const delayLogin = delayLoginCheckbox?.checked;
-            const chatgptApiKey = chatgptApiKeyInput?.value;
-            const geminiApiKey = geminiApiKeyInput?.value;
+            const settings = {
+                shgpuUsername: usernameInput?.value,
+                shgpuPassword: passwordInput?.value,
+                autoLogin: autoLoginCheckbox?.checked,
+                delayLogin: delayLoginCheckbox?.checked,
+                chatgptApiKey: chatgptApiKeyInput?.value,
+                geminiApiKey: geminiApiKeyInput?.value,
+                searchEngines: Array.from(document.querySelectorAll('.search-checkbox:checked'))
+                    .map(cb => cb.value),
+                theme: document.querySelector('.theme-option.active')?.dataset.theme
+            };
 
-            // Получаем текущие значения поисковиков
-            const searchEngines = Array.from(document.querySelectorAll('.search-checkbox:checked'))
-                .map(cb => cb.value);
-
-            // Получаем текущую тему
-            const activeThemeOption = document.querySelector('.theme-option.active');
-            const theme = activeThemeOption?.dataset.theme;
-
-            // Сохраняем все настройки
-            chrome.storage.sync.set({
-                shgpuUsername: username,
-                shgpuPassword: password,
-                autoLogin: autoLogin,
-                delayLogin: delayLogin,
-                searchEngines: searchEngines,
-                theme: theme,
-                chatgptApiKey: chatgptApiKey,
-                geminiApiKey: geminiApiKey
-            }, function () {
-                // Показываем "Настройки сохранены" временно
-                saveSettingsButton.classList.add('saved');
-                setTimeout(() => {
-                    saveSettingsButton.classList.remove('saved');
-                }, 2000);
-                saveSettingsButton.disabled = true;
-
-                setTimeout(() => {
-                    saveText.style.display = 'inline';
-                    savedText.style.display = 'none';
-                }, 2000);
-            });
+            saveSettings(settings, showSaveConfirmation);
         });
     }
 
@@ -145,6 +121,9 @@ document.addEventListener('DOMContentLoaded', function () {
         if (data.searchEngines) {
             searchCheckboxes.forEach(checkbox => {
                 checkbox.checked = data.searchEngines.includes(checkbox.value);
+                if (checkbox.checked && (checkbox.value === 'chatgpt' || checkbox.value === 'gemini')) {
+                    toggleApiKeyFields(checkbox, true);
+                }
             });
         }
 
@@ -155,12 +134,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if (data.delayLogin && delayLoginCheckbox) delayLoginCheckbox.checked = data.delayLogin;
 
         // API ключи
-        if (data.chatgptApiKey && chatgptApiKeyInput) {
-            chatgptApiKeyInput.value = data.chatgptApiKey;
-        }
-        if (data.geminiApiKey && geminiApiKeyInput) {
-            geminiApiKeyInput.value = data.geminiApiKey;
-        }
+        if (data.chatgptApiKey && chatgptApiKeyInput) chatgptApiKeyInput.value = data.chatgptApiKey;
+        if (data.geminiApiKey && geminiApiKeyInput) geminiApiKeyInput.value = data.geminiApiKey;
     });
 
     // Функция включения кнопки сохранения
@@ -208,5 +183,51 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
         });
+    }
+
+    // Функция для переключения полей API ключей
+    function toggleApiKeyFields(checkbox, init = false) {
+        const optionId = checkbox.value + '-option';
+        const parentOption = document.getElementById(optionId);
+
+        if (checkbox.value === 'chatgpt' || checkbox.value === 'gemini') {
+            if (checkbox.checked) {
+                parentOption.classList.add('expanded');
+            } else {
+                parentOption.classList.remove('expanded');
+            }
+
+            if (!init) {
+                const apiKeyInput = parentOption.querySelector('.api-key-input');
+                if (apiKeyInput) {
+                    saveSettings({ [checkbox.value + 'ApiKey']: checkbox.checked ? apiKeyInput.value : '' });
+                }
+            }
+        }
+    }
+
+    // Универсальная функция сохранения настроек
+    function saveSettings(settings, callback) {
+        chrome.storage.sync.set(settings, function () {
+            if (typeof callback === 'function') {
+                callback();
+            }
+        });
+    }
+
+    // Функция показа подтверждения сохранения
+    function showSaveConfirmation() {
+        if (!saveSettingsButton) return;
+
+        saveSettingsButton.classList.add('saved');
+        setTimeout(() => {
+            saveSettingsButton.classList.remove('saved');
+        }, 2000);
+        saveSettingsButton.disabled = true;
+
+        setTimeout(() => {
+            if (saveText) saveText.style.display = 'inline';
+            if (savedText) savedText.style.display = 'none';
+        }, 2000);
     }
 });

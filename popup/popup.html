@@ -69,38 +69,38 @@
             <div class="setting-group">
                 <label class="setting-label">Искать ответы в...</label>
                 <div class="search-engines-container">
-                    <label class="search-engine-option">
-                        <input type="checkbox" class="search-checkbox" value="chatgpt">
-                        <span class="search-engine-label">ChatGPT</span>
+                    <label class="search-engine-option" id="chatgpt-option">
+                        <div class="engine-main">
+                            <input type="checkbox" class="search-checkbox" value="chatgpt" id="chatgpt-checkbox">
+                            <span class="search-engine-label">ChatGPT</span>
+                        </div>
+                        <div class="api-key-container">
+                            <input type="password" class="api-key-input" placeholder="Введите OpenAI API ключ (sk-...)">
+                            <a href="https://platform.openai.com/api-keys" target="_blank" class="api-key-link">Получить
+                                ключ</a>
+                        </div>
                     </label>
-                    <label class="search-engine-option">
-                        <input type="checkbox" class="search-checkbox" value="gemini">
-                        <span class="search-engine-label">Gemini</span>
+
+                    <label class="search-engine-option" id="gemini-option">
+                        <div class="engine-main">
+                            <input type="checkbox" class="search-checkbox" value="gemini" id="gemini-checkbox">
+                            <span class="search-engine-label">Gemini</span>
+                        </div>
+                        <div class="api-key-container">
+                            <input type="password" class="api-key-input" placeholder="Введите Google Gemini API ключ">
+                            <a href="https://ai.google.dev/" target="_blank" class="api-key-link">Получить ключ</a>
+                        </div>
                     </label>
+
                     <label class="search-engine-option">
                         <input type="checkbox" class="search-checkbox" value="google">
                         <span class="search-engine-label">Google</span>
                     </label>
+
                     <label class="search-engine-option">
                         <input type="checkbox" class="search-checkbox" value="yandex">
                         <span class="search-engine-label">Яндекс</span>
                     </label>
-                </div>
-            </div>
-
-            <div class="setting-group">
-                <label class="setting-label">API ключи для нейросетей</label>
-                <div class="login-fields">
-                    <input type="password" id="chatgpt-api-key" placeholder="OpenAI API ключ (для ChatGPT)"
-                        class="glass-input">
-                    <input type="password" id="gemini-api-key" placeholder="Google Gemini API ключ" class="glass-input">
-                    <div style="font-size: 12px; color: #666; margin-top: 5px;">
-                        Ключи сохраняются локально и используются только для ваших запросов.
-                        <a href="https://platform.openai.com/api-keys" target="_blank" style="color: #4a90e2;">Получить
-                            OpenAI ключ</a> |
-                        <a href="https://ai.google.dev/" target="_blank" style="color: #4a90e2;">Получить Gemini
-                            ключ</a>
-                    </div>
                 </div>
             </div>
 
