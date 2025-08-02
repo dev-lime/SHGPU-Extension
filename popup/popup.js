@@ -67,6 +67,12 @@ document.addEventListener('DOMContentLoaded', function () {
         delayLoginCheckbox.addEventListener('change', enableSaveButton);
     }
 
+    // Обработчик изменения API ключа
+    const aiApiKeyInput = document.getElementById('ai-api-key');
+    if (aiApiKeyInput) {
+        aiApiKeyInput.addEventListener('input', enableSaveButton);
+    }
+
     // Сохранение всех настроек
     if (saveSettingsButton) {
         saveSettingsButton.addEventListener('click', function () {
@@ -75,24 +81,23 @@ document.addEventListener('DOMContentLoaded', function () {
             const autoLogin = autoLoginCheckbox?.checked;
             const delayLogin = delayLoginCheckbox?.checked;
 
-            // Получаем текущие значения поисковиков
             const searchEngines = Array.from(document.querySelectorAll('.search-checkbox:checked'))
                 .map(cb => cb.value);
+            const aiApiKey = document.getElementById('ai-api-key')?.value;
 
-            // Получаем текущую тему
             const activeThemeOption = document.querySelector('.theme-option.active');
             const theme = activeThemeOption?.dataset.theme;
 
-            // Сохраняем все настройки
             chrome.storage.sync.set({
                 shgpuUsername: username,
                 shgpuPassword: password,
                 autoLogin: autoLogin,
                 delayLogin: delayLogin,
                 searchEngines: searchEngines,
-                theme: theme
+                theme: theme,
+                aiApiKey: aiApiKey
             }, function () {
-                // Показываем "Настройки сохранены" временно
+                // Показывает "Настройки сохранены" временно
                 saveSettingsButton.classList.add('saved');
                 setTimeout(() => {
                     saveSettingsButton.classList.remove('saved');
@@ -115,7 +120,8 @@ document.addEventListener('DOMContentLoaded', function () {
         'shgpuUsername',
         'shgpuPassword',
         'autoLogin',
-        'delayLogin'
+        'delayLogin',
+        'aiApiKey'
     ], function (data) {
         // Theme
         if (data.theme) {
@@ -135,6 +141,11 @@ document.addEventListener('DOMContentLoaded', function () {
         if (data.shgpuPassword && passwordInput) passwordInput.value = data.shgpuPassword;
         if (data.autoLogin && autoLoginCheckbox) autoLoginCheckbox.checked = data.autoLogin;
         if (data.delayLogin && delayLoginCheckbox) delayLoginCheckbox.checked = data.delayLogin;
+
+        // API key
+        if (data.aiApiKey && document.getElementById('ai-api-key')) {
+            document.getElementById('ai-api-key').value = data.aiApiKey;
+        }
     });
 
     // Функция включения кнопки сохранения
