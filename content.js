@@ -659,6 +659,77 @@ if (window.location.href.includes('edu.shspu.ru/login/index.php')) {
 	});
 }
 
+function makeCardsClickable() {
+	const cards = document.querySelectorAll('.dashboard-card[data-course-id]');
+
+	cards.forEach(card => {
+		if (card.classList.contains('full-clickable')) {
+			return;
+		}
+
+		const courseId = card.getAttribute('data-course-id');
+		const courseLink = card.querySelector('a[href*="course/view.php"]');
+
+		if (courseLink && courseId) {
+			card.style.cursor = 'pointer';
+			card.style.position = 'relative';
+			card.classList.add('full-clickable');
+
+			let overlay = card.querySelector('.card-click-overlay');
+			if (!overlay) {
+				overlay = document.createElement('a');
+				overlay.href = courseLink.href;
+				overlay.className = 'card-click-overlay';
+				overlay.style.position = 'absolute';
+				overlay.style.top = '0';
+				overlay.style.left = '0';
+				overlay.style.width = '100%';
+				overlay.style.height = '100%';
+				overlay.style.zIndex = '1';
+				overlay.style.opacity = '0';
+				overlay.style.cursor = 'pointer';
+				card.appendChild(overlay);
+			}
+
+			const cardBody = card.querySelector('.card-body');
+			const cardFooter = card.querySelector('.card-footer');
+
+			if (cardBody) cardBody.style.position = 'relative';
+			if (cardBody) cardBody.style.zIndex = '2';
+			if (cardFooter) cardFooter.style.position = 'relative';
+			if (cardFooter) cardFooter.style.zIndex = '2';
+
+			card.addEventListener('click', function (e) {
+				if (e.target.closest('.dropdown') ||
+					e.target.closest('.coursemenubtn') ||
+					e.target.closest('button') ||
+					e.target.closest('[data-action]')) {
+					return;
+				}
+
+				if (!e.target.closest('a') || e.target.closest('.card-click-overlay')) {
+					window.location.href = courseLink.href;
+				}
+			});
+		}
+	});
+}
+
+document.addEventListener('DOMContentLoaded', makeCardsClickable);
+
+const observer = new MutationObserver(function (mutations) {
+	mutations.forEach(function (mutation) {
+		if (mutation.addedNodes.length) {
+			makeCardsClickable();
+		}
+	});
+});
+
+observer.observe(document.body, {
+	childList: true,
+	subtree: true
+});
+
 function init() {
 	removeNavItems();
 	removeCards();
