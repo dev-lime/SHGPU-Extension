@@ -663,6 +663,7 @@ function makeCardsClickable() {
 	const cards = document.querySelectorAll('.dashboard-card[data-course-id]');
 
 	cards.forEach(card => {
+		// Проверяем, не обработали ли мы уже эту карточку
 		if (card.classList.contains('full-clickable')) {
 			return;
 		}
@@ -671,10 +672,12 @@ function makeCardsClickable() {
 		const courseLink = card.querySelector('a[href*="course/view.php"]');
 
 		if (courseLink && courseId) {
+			// Добавляет стили для карточки
 			card.style.cursor = 'pointer';
 			card.style.position = 'relative';
 			card.classList.add('full-clickable');
 
+			// Создаем прозрачный overlay для клика
 			let overlay = card.querySelector('.card-click-overlay');
 			if (!overlay) {
 				overlay = document.createElement('a');
@@ -691,6 +694,7 @@ function makeCardsClickable() {
 				card.appendChild(overlay);
 			}
 
+			// Поднимаем z-index для контента, чтобы он был поверх overlay
 			const cardBody = card.querySelector('.card-body');
 			const cardFooter = card.querySelector('.card-footer');
 
@@ -699,7 +703,9 @@ function makeCardsClickable() {
 			if (cardFooter) cardFooter.style.position = 'relative';
 			if (cardFooter) cardFooter.style.zIndex = '2';
 
+			// Обработчик клика на саму карточку
 			card.addEventListener('click', function (e) {
+				// Игнорируем клики по элементам управления (меню, кнопки и т.д.)
 				if (e.target.closest('.dropdown') ||
 					e.target.closest('.coursemenubtn') ||
 					e.target.closest('button') ||
@@ -707,6 +713,7 @@ function makeCardsClickable() {
 					return;
 				}
 
+				// Если клик не на существующей ссылке, переходим на курс
 				if (!e.target.closest('a') || e.target.closest('.card-click-overlay')) {
 					window.location.href = courseLink.href;
 				}
@@ -715,8 +722,10 @@ function makeCardsClickable() {
 	});
 }
 
+// Запускает при загрузке страницы
 document.addEventListener('DOMContentLoaded', makeCardsClickable);
 
+// Отслеживает динамические изменения (для Ajax-подгрузки)
 const observer = new MutationObserver(function (mutations) {
 	mutations.forEach(function (mutation) {
 		if (mutation.addedNodes.length) {

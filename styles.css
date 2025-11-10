@@ -30,6 +30,11 @@ body {
                                   supported by Chrome, Edge, Opera and Firefox */
 }
 
+/* Заголовок страницы */
+.col-12.pt-3.pb-3 {
+	padding-top: 0rem !important;
+}
+
 /* Glassmorphism для карточек курсов */
 .dashboard-card {
 	background: rgba(255, 255, 255, 0.85) !important;
