@@ -166,7 +166,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	// Apply theme function
 	function applyTheme(theme) {
 		if (theme === 'system') {
-			// Проверяем системные настройки
 			if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
 				document.body.classList.add('dark-theme');
 			} else {
@@ -177,9 +176,19 @@ document.addEventListener('DOMContentLoaded', function () {
 		} else {
 			document.body.classList.remove('dark-theme');
 		}
+
+		// Send a content script message to update the theme on the site
+		chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+			if (tabs[0] && tabs[0].url.includes('edu.shspu.ru')) {
+				chrome.tabs.sendMessage(tabs[0].id, {
+					action: 'themeChanged',
+					theme: theme
+				});
+			}
+		});
 	}
 
-	// Функция показа статуса
+	// Status display function
 	function showLoginStatus(message, type) {
 		if (!loginStatus) return;
 

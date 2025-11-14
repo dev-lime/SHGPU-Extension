@@ -739,6 +739,74 @@ observer.observe(document.body, {
 	subtree: true
 });
 
+// Функция применения темы
+function applyTheme() {
+	// Получает настройки темы из storage
+	chrome.storage.sync.get(['theme'], function (data) {
+		const theme = data.theme || 'light';
+		const isDark = shouldApplyDarkTheme(theme);
+
+		if (isDark) {
+			document.body.classList.add('dark-theme');
+		} else {
+			document.body.classList.remove('dark-theme');
+		}
+
+		// Применяет дополнительные стили для темной темы
+		applyDarkThemeStyles(isDark);
+	});
+}
+
+// Определяет, нужно ли применять темную тему
+function shouldApplyDarkTheme(theme) {
+	if (theme === 'system') {
+		return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+	}
+	return theme === 'dark';
+}
+
+// Применяет дополнительные стили для темной темы
+function applyDarkThemeStyles(isDark) {
+	const styleId = 'dark-theme-styles';
+	let styleElement = document.getElementById(styleId);
+
+	if (isDark) {
+		if (!styleElement) {
+			styleElement = document.createElement('style');
+			styleElement.id = styleId;
+			document.head.appendChild(styleElement);
+		}
+		// Стили будут применены через CSS
+	} else if (styleElement) {
+		styleElement.remove();
+	}
+}
+
+// Слушает изменения системной темы
+if (window.matchMedia) {
+	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function (e) {
+		chrome.storage.sync.get(['theme'], function (data) {
+			if (data.theme === 'system') {
+				applyTheme();
+			}
+		});
+	});
+}
+
+// Слушает изменения настроек расширения
+chrome.storage.onChanged.addListener(function (changes, namespace) {
+	if (namespace === 'sync' && changes.theme) {
+		applyTheme();
+	}
+});
+
+// Обработчик сообщений от popup
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+	if (request.action === 'themeChanged') {
+		applyTheme();
+	}
+});
+
 function init() {
 	removeNavItems();
 	removeCards();

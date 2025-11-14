@@ -1,4 +1,3 @@
-/* Основные переменные для тем */
 :root {
 	--accent-color: #44a561;
 	--text-color: white;
@@ -16,7 +15,6 @@
 	--shadow-color: rgba(31, 38, 135, 0.2);
 }
 
-/* Темная тема */
 body.dark-theme {
 	--text-color: rgba(255, 255, 255, 0.9);
 	--container-bg: rgba(0, 0, 0, 0.2);

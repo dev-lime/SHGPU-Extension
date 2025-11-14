@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "SHGPU-Extension",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"description": "Полезное расширение с новыми функциями и обновлённым дизайном для ЭИОС ШГПУ (edu.shspu.ru)",
 	"icons": {
 		"16": "icons/icon16.png",
