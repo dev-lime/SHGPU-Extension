@@ -2,138 +2,144 @@
 <html lang="ru">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHGPU-Extension</title>
-    <link rel="stylesheet" href="popup.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>SHGPU-Extension</title>
+	<link rel="stylesheet" href="popup.css">
 </head>
 
 <body>
-    <div class="glass-container">
-        <div class="tabs">
-            <button class="tab-button active" data-tab="main">Главная</button>
-            <button class="tab-button" data-tab="settings">Настройки</button>
-        </div>
+	<div class="glass-container">
+		<div class="tabs">
+			<button class="tab-button active" data-tab="main">Главная</button>
+			<button class="tab-button" data-tab="settings">Настройки</button>
+		</div>
 
-        <div id="main-tab" class="tab-content active">
-            <ul class="glass-list">
-                <li>
-                    <button class="glass-button" id="eios-button">
-                        <svg class="menu-icon" viewBox="0 0 24 24">
-                            <path fill="currentColor"
-                                d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" />
-                        </svg>
-                        <span style="flex-grow: 1; text-align: left;">ЭИОС</span>
-                    </button>
-                </li>
-                <li>
-                    <button class="glass-button" id="lms-button">
-                        <svg class="menu-icon" viewBox="0 0 24 24">
-                            <path fill="currentColor" d="M4 5v13h17V5H4m10 2v9h-3V7h3M6 7h3v9H6V7m13 9h-3V7h3v9z" />
-                        </svg>
-                        <span style="flex-grow: 1; text-align: left;">LMS</span>
-                    </button>
-                </li>
-                <li class="github-list-item">
-                    <a href="https://github.com/dev-lime/SHGPU-Extension" target="_blank"
-                        class="github-button glass-button">
-                        <svg class="github-icon menu-icon" viewBox="0 0 24 24">
-                            <path fill="currentColor"
-                                d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
-                        </svg>
-                        <span style="flex-grow: 1; text-align: left;">GitHub проекта</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
+		<div id="main-tab" class="tab-content active">
+			<ul class="glass-list">
+				<li>
+					<button class="glass-button" id="eios-button">
+						<svg class="menu-icon" viewBox="0 0 24 24">
+							<path fill="currentColor"
+								d="M12 3L1 9l11 6 9-4.91V17h2V9M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" />
+						</svg>
+						<span style="flex-grow: 1; text-align: left;">ЭИОС</span>
+					</button>
+				</li>
+				<li>
+					<button class="glass-button" id="lms-button">
+						<svg class="menu-icon" viewBox="0 0 24 24">
+							<path fill="currentColor"
+								d="M17,19H7V5H17M17,1H7C5.89,1 5,1.89 5,3V21A2,2 0 0,0 7,23H17A2,2 0 0,0 19,21V3C19,1.89 18.1,1 17,1Z" />
+						</svg>
+						<span style="flex-grow: 1; text-align: left;">LMS</span>
+					</button>
+				</li>
+				<li class="github-list-item">
+					<a href="https://github.com/dev-lime/SHGPU-Extension" target="_blank"
+						class="github-button glass-button">
+						<svg class="github-icon menu-icon" viewBox="0 0 24 24">
+							<path fill="currentColor"
+								d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+						</svg>
+						<span style="flex-grow: 1; text-align: left;">GitHub проекта</span>
+					</a>
+				</li>
+				<li class="version-info">
+					<div class="version-text">
+						Версия: <span id="extension-version">0.2.1</span>
+					</div>
+				</li>
+			</ul>
+		</div>
 
-        <div id="settings-tab" class="tab-content">
-            <div class="setting-group">
-                <label class="setting-label">Тема интерфейса</label>
-                <div class="theme-options">
-                    <button class="theme-option" data-theme="light">
-                        <div class="theme-preview light"></div>
-                        <span>Светлая</span>
-                    </button>
-                    <button class="theme-option" data-theme="dark">
-                        <div class="theme-preview dark"></div>
-                        <span>Тёмная</span>
-                    </button>
-                    <button class="theme-option" data-theme="system">
-                        <div class="theme-preview system"></div>
-                        <span>Системная</span>
-                    </button>
-                </div>
-            </div>
+		<div id="settings-tab" class="tab-content">
+			<div class="setting-group">
+				<label class="setting-label">Тема интерфейса</label>
+				<div class="theme-options">
+					<button class="theme-option" data-theme="light">
+						<div class="theme-preview light"></div>
+						<span>Светлая</span>
+					</button>
+					<button class="theme-option" data-theme="dark">
+						<div class="theme-preview dark"></div>
+						<span>Тёмная</span>
+					</button>
+					<button class="theme-option" data-theme="system">
+						<div class="theme-preview system"></div>
+						<span>Системная</span>
+					</button>
+				</div>
+			</div>
 
-            <div class="setting-group">
-                <label class="setting-label">Искать ответы в...</label>
-                <div class="search-engines-container">
-                    <label class="search-engine-option" id="chatgpt-option">
-                        <div class="engine-main">
-                            <input type="checkbox" class="search-checkbox" value="chatgpt" id="chatgpt-checkbox">
-                            <span class="search-engine-label">ChatGPT</span>
-                        </div>
-                        <div class="api-key-container">
-                            <input type="password" class="api-key-input" placeholder="OpenAI API ключ (sk-...)">
-                            <a href="https://platform.openai.com/api-keys" target="_blank" class="api-key-link">Получить
-                                ключ</a>
-                        </div>
-                    </label>
+			<div class="setting-group">
+				<label class="setting-label">Искать ответы в...</label>
+				<div class="search-engines-container">
+					<label class="search-engine-option" id="chatgpt-option">
+						<div class="engine-main">
+							<input type="checkbox" class="search-checkbox" value="chatgpt" id="chatgpt-checkbox">
+							<span class="search-engine-label">ChatGPT</span>
+						</div>
+						<div class="api-key-container">
+							<input type="password" class="api-key-input" placeholder="OpenAI API ключ (sk-...)">
+							<a href="https://platform.openai.com/api-keys" target="_blank" class="api-key-link">Получить
+								ключ</a>
+						</div>
+					</label>
 
-                    <label class="search-engine-option" id="gemini-option">
-                        <div class="engine-main">
-                            <input type="checkbox" class="search-checkbox" value="gemini" id="gemini-checkbox">
-                            <span class="search-engine-label">Gemini</span>
-                        </div>
-                        <div class="api-key-container">
-                            <input type="password" class="api-key-input" placeholder="Google Gemini API ключ">
-                            <a href="https://ai.google.dev/" target="_blank" class="api-key-link">Получить ключ</a>
-                        </div>
-                    </label>
+					<label class="search-engine-option" id="gemini-option">
+						<div class="engine-main">
+							<input type="checkbox" class="search-checkbox" value="gemini" id="gemini-checkbox">
+							<span class="search-engine-label">Gemini</span>
+						</div>
+						<div class="api-key-container">
+							<input type="password" class="api-key-input" placeholder="Google Gemini API ключ">
+							<a href="https://ai.google.dev/" target="_blank" class="api-key-link">Получить ключ</a>
+						</div>
+					</label>
 
-                    <label class="search-engine-option">
-                        <input type="checkbox" class="search-checkbox" value="google">
-                        <span class="search-engine-label">Google</span>
-                    </label>
+					<label class="search-engine-option">
+						<input type="checkbox" class="search-checkbox" value="google">
+						<span class="search-engine-label">Google</span>
+					</label>
 
-                    <label class="search-engine-option">
-                        <input type="checkbox" class="search-checkbox" value="yandex">
-                        <span class="search-engine-label">Яндекс</span>
-                    </label>
-                </div>
-            </div>
+					<label class="search-engine-option">
+						<input type="checkbox" class="search-checkbox" value="yandex">
+						<span class="search-engine-label">Яндекс</span>
+					</label>
+				</div>
+			</div>
 
-            <div class="setting-group">
-                <label class="setting-label">Автовход в ЭИОС</label>
-                <div class="login-fields">
-                    <input type="text" id="shgpu-username" placeholder="Логин" class="glass-input">
-                    <input type="password" id="shgpu-password" placeholder="Пароль" class="glass-input">
-                    <label class="custom-checkbox">
-                        <input type="checkbox" id="auto-login">
-                        <span class="checkmark"></span>
-                        <span class="checkbox-label">Автоматический вход</span>
-                    </label>
-                    <label class="custom-checkbox">
-                        <input type="checkbox" id="delay-login">
-                        <span class="checkmark"></span>
-                        <span class="checkbox-label">Задержка входа</span>
-                        <span class="tooltip-icon">i
-                            <span class="tooltip-text">Включите эту опцию, если автоматический вход не работает.
-                                Добавляет небольшую задержку перед попыткой входа.</span>
-                        </span>
-                    </label>
-                </div>
-                <div id="login-status" class="status-message"></div>
-            </div>
+			<div class="setting-group">
+				<label class="setting-label">Автовход в ЭИОС</label>
+				<div class="login-fields">
+					<input type="text" id="shgpu-username" placeholder="Логин" class="glass-input">
+					<input type="password" id="shgpu-password" placeholder="Пароль" class="glass-input">
+					<label class="custom-checkbox">
+						<input type="checkbox" id="auto-login">
+						<span class="checkmark"></span>
+						<span class="checkbox-label">Автоматический вход</span>
+					</label>
+					<label class="custom-checkbox">
+						<input type="checkbox" id="delay-login">
+						<span class="checkmark"></span>
+						<span class="checkbox-label">Задержка входа</span>
+						<span class="tooltip-icon">i
+							<span class="tooltip-text">Включите эту опцию, если автоматический вход не работает.
+								Добавляет небольшую задержку перед попыткой входа.</span>
+						</span>
+					</label>
+				</div>
+				<div id="login-status" class="status-message"></div>
+			</div>
 
-            <button id="save-settings" class="glass-button" disabled>
-                <span id="save-text">Сохранить настройки</span>
-                <span id="saved-text">Настройки сохранены</span>
-            </button>
-        </div>
-    </div>
-    <script src="popup.js"></script>
+			<button id="save-settings" class="glass-button" disabled>
+				<span id="save-text">Сохранить настройки</span>
+				<span id="saved-text">Настройки сохранены</span>
+			</button>
+		</div>
+	</div>
+	<script src="popup.js"></script>
 </body>
 
 </html>

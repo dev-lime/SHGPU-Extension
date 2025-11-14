@@ -1,615 +1,621 @@
 /* Основные переменные для тем */
 :root {
-    --accent-color: #44a561;
-    --text-color: white;
-    --bg-gradient: linear-gradient(135deg, var(--accent-color) 0%, #186910 100%);
-    --container-bg: rgba(255, 255, 255, 0.1);
-    --container-border: 1px solid rgba(255, 255, 255, 0.2);
-    --button-bg: rgba(255, 255, 255, 0.15);
-    --button-hover-bg: rgba(255, 255, 255, 0.25);
-    --input-bg: rgba(255, 255, 255, 0.1);
-    --input-border: 1px solid rgba(255, 255, 255, 0.2);
-    --checkbox-bg: rgba(255, 255, 255, 0.1);
-    --checkbox-border: 1px solid rgba(255, 255, 255, 0.2);
-    --tooltip-bg: rgba(255, 255, 255, 0.2);
-    --tooltip-text: white;
-    --shadow-color: rgba(31, 38, 135, 0.2);
+	--accent-color: #44a561;
+	--text-color: white;
+	--bg-gradient: linear-gradient(135deg, var(--accent-color) 0%, #186910 100%);
+	--container-bg: rgba(255, 255, 255, 0.1);
+	--container-border: 1px solid rgba(255, 255, 255, 0.2);
+	--button-bg: rgba(255, 255, 255, 0.15);
+	--button-hover-bg: rgba(255, 255, 255, 0.25);
+	--input-bg: rgba(255, 255, 255, 0.1);
+	--input-border: 1px solid rgba(255, 255, 255, 0.2);
+	--checkbox-bg: rgba(255, 255, 255, 0.1);
+	--checkbox-border: 1px solid rgba(255, 255, 255, 0.2);
+	--tooltip-bg: rgba(255, 255, 255, 0.2);
+	--tooltip-text: white;
+	--shadow-color: rgba(31, 38, 135, 0.2);
 }
 
 /* Темная тема */
 body.dark-theme {
-    --text-color: rgba(255, 255, 255, 0.9);
-    --container-bg: rgba(0, 0, 0, 0.2);
-    --container-border: 1px solid rgba(255, 255, 255, 0.1);
-    --button-bg: rgba(0, 0, 0, 0.2);
-    --button-hover-bg: rgba(0, 0, 0, 0.3);
-    --input-bg: rgba(0, 0, 0, 0.2);
-    --input-border: 1px solid rgba(255, 255, 255, 0.1);
-    --checkbox-bg: rgba(0, 0, 0, 0.2);
-    --checkbox-border: 1px solid rgba(255, 255, 255, 0.1);
-    --tooltip-bg: rgba(0, 0, 0, 0.3);
-    --tooltip-text: rgba(255, 255, 255, 0.9);
-    --shadow-color: rgba(0, 0, 0, 0.3);
+	--text-color: rgba(255, 255, 255, 0.9);
+	--container-bg: rgba(0, 0, 0, 0.2);
+	--container-border: 1px solid rgba(255, 255, 255, 0.1);
+	--button-bg: rgba(0, 0, 0, 0.2);
+	--button-hover-bg: rgba(0, 0, 0, 0.3);
+	--input-bg: rgba(0, 0, 0, 0.2);
+	--input-border: 1px solid rgba(255, 255, 255, 0.1);
+	--checkbox-bg: rgba(0, 0, 0, 0.2);
+	--checkbox-border: 1px solid rgba(255, 255, 255, 0.1);
+	--tooltip-bg: rgba(0, 0, 0, 0.3);
+	--tooltip-text: rgba(255, 255, 255, 0.9);
+	--shadow-color: rgba(0, 0, 0, 0.3);
 }
 
 /* Базовые стили */
 body {
-    width: 320px;
-    min-height: 200px;
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    background: var(--bg-gradient);
-    margin: 0;
-    padding: 0;
-    color: var(--text-color);
-    transition: background 0.3s ease, color 0.3s ease;
+	width: 320px;
+	min-height: 200px;
+	font-family: 'Segoe UI', system-ui, sans-serif;
+	background: var(--bg-gradient);
+	margin: 0;
+	padding: 0;
+	color: var(--text-color);
+	transition: background 0.3s ease, color 0.3s ease;
 }
 
 .glass-container {
-    background: var(--container-bg);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: var(--container-border);
-    box-shadow:
-        0 8px 32px 0 var(--shadow-color),
-        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
-    padding: 15px;
-    width: 100%;
-    box-sizing: border-box;
-    overflow: hidden;
+	background: var(--container-bg);
+	backdrop-filter: blur(20px) saturate(180%);
+	-webkit-backdrop-filter: blur(20px) saturate(180%);
+	border: var(--container-border);
+	box-shadow:
+		0 8px 32px 0 var(--shadow-color),
+		inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+	padding: 15px;
+	width: 100%;
+	box-sizing: border-box;
+	overflow: hidden;
 }
 
 /* Вкладки */
 .tabs {
-    display: flex;
-    margin-bottom: 15px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    padding: 4px;
-    backdrop-filter: blur(5px);
+	display: flex;
+	margin-bottom: 15px;
+	background: rgba(255, 255, 255, 0.1);
+	border-radius: 12px;
+	padding: 4px;
+	backdrop-filter: blur(5px);
 }
 
 .tab-button {
-    flex: 1;
-    background: transparent;
-    border: none;
-    color: var(--text-color);
-    padding: 8px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(5px);
+	flex: 1;
+	background: transparent;
+	border: none;
+	color: var(--text-color);
+	padding: 8px 12px;
+	border-radius: 8px;
+	cursor: pointer;
+	font-weight: 500;
+	transition: all 0.3s ease;
+	backdrop-filter: blur(5px);
 }
 
 .tab-button.active {
-    background: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	background: rgba(255, 255, 255, 0.3);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 body.dark-theme .tab-button.active {
-    background: rgba(0, 0, 0, 0.3);
+	background: rgba(0, 0, 0, 0.3);
 }
 
 .tab-content {
-    display: none;
+	display: none;
 }
 
 .tab-content.active {
-    display: block;
+	display: block;
 }
 
 /* Кнопки и списки */
 .glass-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+	list-style: none;
+	padding: 0;
+	margin: 0;
 }
 
 .glass-button {
-    background: var(--button-bg);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: var(--container-border);
-    border-radius: 10px;
-    color: var(--text-color);
-    padding: 12px 15px;
-    margin: 8px 0;
-    width: 100%;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    box-sizing: border-box;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	background: var(--button-bg);
+	backdrop-filter: blur(10px);
+	-webkit-backdrop-filter: blur(10px);
+	border: var(--container-border);
+	border-radius: 10px;
+	color: var(--text-color);
+	padding: 12px 15px;
+	margin: 8px 0;
+	width: 100%;
+	font-size: 14px;
+	font-weight: 500;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	box-sizing: border-box;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .glass-button:hover {
-    background: var(--button-hover-bg);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+	background: var(--button-hover-bg);
+	transform: translateY(-2px);
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 body.dark-theme .glass-button:hover {
-    background: rgba(0, 0, 0, 0.4);
+	background: rgba(0, 0, 0, 0.4);
 }
 
 .glass-button:active {
-    transform: translateY(0);
+	transform: translateY(0);
 }
 
 .menu-icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 10px;
-    opacity: 0.9;
+	width: 20px;
+	height: 20px;
+	margin-right: 10px;
+	opacity: 0.9;
 }
 
 /* Настройки */
 .setting-group {
-    margin-bottom: 20px;
-    background: var(--container-bg);
-    backdrop-filter: blur(10px);
-    border-radius: 12px;
-    padding: 15px;
-    border: var(--container-border);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+	margin-bottom: 20px;
+	background: var(--container-bg);
+	backdrop-filter: blur(10px);
+	border-radius: 12px;
+	padding: 15px;
+	border: var(--container-border);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
 }
 
 .setting-label {
-    display: block;
-    margin-bottom: 12px;
-    font-weight: 500;
-    font-size: 14px;
-    color: var(--text-color);
+	display: block;
+	margin-bottom: 12px;
+	font-weight: 500;
+	font-size: 14px;
+	color: var(--text-color);
 }
 
 /* Выбор темы */
 .theme-options {
-    display: flex;
-    gap: 10px;
+	display: flex;
+	gap: 10px;
 }
 
 .theme-option {
-    flex: 1;
-    background: transparent;
-    border: none;
-    color: var(--text-color);
-    padding: 0;
-    cursor: pointer;
-    transition: transform 0.2s;
-    position: relative;
+	flex: 1;
+	background: transparent;
+	border: none;
+	color: var(--text-color);
+	padding: 0;
+	cursor: pointer;
+	transition: transform 0.2s;
+	position: relative;
 }
 
 .theme-option.active::after {
-    content: "✓";
-    position: absolute;
-    top: -5px;
-    right: -5px;
-    width: 20px;
-    height: 20px;
-    background: var(--accent-color);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 12px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+	content: "✓";
+	position: absolute;
+	top: -5px;
+	right: -5px;
+	width: 20px;
+	height: 20px;
+	background: var(--accent-color);
+	border-radius: 50%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 12px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .theme-option:hover {
-    transform: translateY(-3px);
+	transform: translateY(-3px);
 }
 
 .theme-preview {
-    height: 50px;
-    border-radius: 8px;
-    margin-bottom: 6px;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    transition: all 0.3s ease;
+	height: 50px;
+	border-radius: 8px;
+	margin-bottom: 6px;
+	border: 2px solid rgba(255, 255, 255, 0.3);
+	transition: all 0.3s ease;
 }
 
 .theme-option:hover .theme-preview {
-    border-color: rgba(255, 255, 255, 0.6);
+	border-color: rgba(255, 255, 255, 0.6);
 }
 
 .theme-option.active .theme-preview {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px var(--accent-color);
+	border-color: var(--accent-color);
+	box-shadow: 0 0 0 2px var(--accent-color);
 }
 
 .theme-preview.light {
-    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+	background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
 }
 
 .theme-preview.dark {
-    background: linear-gradient(135deg, #2c3e50 0%, #1a1a1a 100%);
+	background: linear-gradient(135deg, #2c3e50 0%, #1a1a1a 100%);
 }
 
 .theme-preview.system {
-    background: linear-gradient(135deg, #f5f7fa 50%, #2c3e50 50%);
+	background: linear-gradient(135deg, #f5f7fa 50%, #2c3e50 50%);
 }
 
 /* Поисковые системы */
 .search-engines-container {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 10px;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-top: 10px;
 }
 
 .search-engine-option {
-    display: flex;
-    align-items: left;
-    padding: 8px 12px;
-    background: var(--container-bg);
-    border-radius: 8px;
-    border: var(--container-border);
-    backdrop-filter: blur(5px);
-    transition: all 0.3s ease;
-    cursor: pointer;
+	display: flex;
+	align-items: left;
+	padding: 8px 12px;
+	background: var(--container-bg);
+	border-radius: 8px;
+	border: var(--container-border);
+	backdrop-filter: blur(5px);
+	transition: all 0.3s ease;
+	cursor: pointer;
 }
 
 .search-engine-option:hover {
-    background: var(--button-hover-bg);
+	background: var(--button-hover-bg);
 }
 
 body.dark-theme .search-engine-option:hover {
-    background: rgba(0, 0, 0, 0.3);
+	background: rgba(0, 0, 0, 0.3);
 }
 
 .search-checkbox {
-    margin-right: 10px;
-    width: 16px;
-    height: 16px;
-    appearance: none;
-    -webkit-appearance: none;
-    background: var(--checkbox-bg);
-    border: var(--checkbox-border);
-    border-radius: 4px;
-    cursor: pointer;
-    position: relative;
-    transition: all 0.2s;
+	margin-right: 10px;
+	width: 16px;
+	height: 16px;
+	appearance: none;
+	-webkit-appearance: none;
+	background: var(--checkbox-bg);
+	border: var(--checkbox-border);
+	border-radius: 4px;
+	cursor: pointer;
+	position: relative;
+	transition: all 0.2s;
 }
 
 .search-checkbox:checked {
-    background: var(--accent-color);
-    border-color: var(--accent-color);
+	background: var(--accent-color);
+	border-color: var(--accent-color);
 }
 
 .search-checkbox:checked::after {
-    content: "";
-    position: absolute;
-    left: 4px;
-    top: 1px;
-    width: 5px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
+	content: "";
+	position: absolute;
+	left: 4px;
+	top: 1px;
+	width: 5px;
+	height: 10px;
+	border: solid white;
+	border-width: 0 2px 2px 0;
+	transform: rotate(45deg);
 }
 
 .search-engine-label {
-    font-size: 14px;
-    color: var(--text-color);
+	font-size: 14px;
+	color: var(--text-color);
 }
 
 /* Поля ввода */
 .login-fields {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
 }
 
 .glass-input {
-    background: var(--input-bg);
-    border: var(--input-border);
-    border-radius: 8px;
-    padding: 10px 12px;
-    color: var(--text-color);
-    font-size: 14px;
-    outline: none;
-    transition: all 0.3s;
-    backdrop-filter: blur(5px);
+	background: var(--input-bg);
+	border: var(--input-border);
+	border-radius: 8px;
+	padding: 10px 12px;
+	color: var(--text-color);
+	font-size: 14px;
+	outline: none;
+	transition: all 0.3s;
+	backdrop-filter: blur(5px);
 }
 
 .glass-input:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px rgba(68, 165, 97, 0.3);
+	border-color: var(--accent-color);
+	box-shadow: 0 0 0 2px rgba(68, 165, 97, 0.3);
 }
 
 .glass-input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
+	color: rgba(255, 255, 255, 0.5);
 }
 
 /* Чекбоксы */
 .custom-checkbox {
-    display: flex;
-    align-items: center;
-    position: relative;
-    padding-left: 30px;
-    cursor: pointer;
-    user-select: none;
-    margin: 8px 0;
+	display: flex;
+	align-items: center;
+	position: relative;
+	padding-left: 30px;
+	cursor: pointer;
+	user-select: none;
+	margin: 8px 0;
 }
 
 .custom-checkbox input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-    height: 0;
-    width: 0;
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+	height: 0;
+	width: 0;
 }
 
 .checkmark {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 20px;
-    width: 20px;
-    background-color: var(--checkbox-bg);
-    border: var(--checkbox-border);
-    border-radius: 6px;
-    backdrop-filter: blur(5px);
-    transition: all 0.3s;
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 20px;
+	width: 20px;
+	background-color: var(--checkbox-bg);
+	border: var(--checkbox-border);
+	border-radius: 6px;
+	backdrop-filter: blur(5px);
+	transition: all 0.3s;
 }
 
 .custom-checkbox:hover .checkmark {
-    background-color: var(--button-hover-bg);
+	background-color: var(--button-hover-bg);
 }
 
 .custom-checkbox input:checked~.checkmark {
-    background-color: var(--accent-color);
-    border-color: var(--accent-color);
+	background-color: var(--accent-color);
+	border-color: var(--accent-color);
 }
 
 .checkmark:after {
-    content: "";
-    position: absolute;
-    display: none;
-    left: 7px;
-    top: 3px;
-    width: 5px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
+	content: "";
+	position: absolute;
+	display: none;
+	left: 7px;
+	top: 3px;
+	width: 5px;
+	height: 10px;
+	border: solid white;
+	border-width: 0 2px 2px 0;
+	transform: rotate(45deg);
 }
 
 .custom-checkbox input:checked~.checkmark:after {
-    display: block;
+	display: block;
 }
 
 .checkbox-label {
-    margin-left: 8px;
-    font-size: 14px;
-    color: var(--text-color);
+	margin-left: 8px;
+	font-size: 14px;
+	color: var(--text-color);
 }
 
 /* Tooltip */
 .tooltip-icon {
-    position: relative;
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    margin-left: 8px;
-    border-radius: 50%;
-    background-color: var(--tooltip-bg);
-    color: var(--tooltip-text);
-    font-size: 12px;
-    text-align: center;
-    line-height: 16px;
-    cursor: help;
-    backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s ease;
+	position: relative;
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	margin-left: 8px;
+	border-radius: 50%;
+	background-color: var(--tooltip-bg);
+	color: var(--tooltip-text);
+	font-size: 12px;
+	text-align: center;
+	line-height: 16px;
+	cursor: help;
+	backdrop-filter: blur(5px);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	transition: all 0.3s ease;
 }
 
 .tooltip-icon:hover {
-    background-color: var(--accent-color);
-    color: white;
+	background-color: var(--accent-color);
+	color: white;
 }
 
 .tooltip-text {
-    visibility: hidden;
-    width: 200px;
-    background: var(--tooltip-bg);
-    color: var(--tooltip-text);
-    text-align: center;
-    border-radius: 12px;
-    padding: 12px;
-    position: absolute;
-    z-index: 1;
-    bottom: 125%;
-    left: 50%;
-    transform: translateX(-50%);
-    opacity: 0;
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    font-size: 12px;
-    font-weight: normal;
-    pointer-events: none;
-    backdrop-filter: blur(10px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    line-height: 1.4;
+	visibility: hidden;
+	width: 200px;
+	background: var(--tooltip-bg);
+	color: var(--tooltip-text);
+	text-align: center;
+	border-radius: 12px;
+	padding: 12px;
+	position: absolute;
+	z-index: 1;
+	bottom: 125%;
+	left: 50%;
+	transform: translateX(-50%);
+	opacity: 0;
+	transition: opacity 0.3s ease, transform 0.3s ease;
+	font-size: 12px;
+	font-weight: normal;
+	pointer-events: none;
+	backdrop-filter: blur(10px) saturate(180%);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+	line-height: 1.4;
 }
 
 .tooltip-icon:hover .tooltip-text {
-    visibility: visible;
-    opacity: 1;
-    transform: translateX(-50%) translateY(-5px);
+	visibility: visible;
+	opacity: 1;
+	transform: translateX(-50%) translateY(-5px);
 }
 
 /* Кнопка сохранения с анимацией */
 #save-settings {
-    position: relative;
-    overflow: hidden;
-    height: 44px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    margin-top: 20px;
+	position: relative;
+	overflow: hidden;
+	height: 44px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	margin-top: 20px;
 }
 
 #save-text,
 #saved-text {
-    transition: opacity 0.3s ease, transform 0.3s ease;
-    position: absolute;
+	transition: opacity 0.3s ease, transform 0.3s ease;
+	position: absolute;
 }
 
 #save-text {
-    opacity: 1;
-    transform: translateY(0);
+	opacity: 1;
+	transform: translateY(0);
 }
 
 #saved-text {
-    opacity: 0;
-    transform: translateY(10px);
+	opacity: 0;
+	transform: translateY(10px);
 }
 
 #save-settings.saved #save-text {
-    opacity: 0;
-    transform: translateY(-10px);
+	opacity: 0;
+	transform: translateY(-10px);
 }
 
 #save-settings.saved #saved-text {
-    opacity: 1;
-    transform: translateY(0);
+	opacity: 1;
+	transform: translateY(0);
 }
 
 /* GitHub ссылка */
 .github-list-item {
-    margin-top: 10px;
+	margin-top: 10px;
 }
 
 .github-button {
-    display: flex;
-    align-items: center;
-    text-decoration: none;
-    color: var(--text-color);
-    transition: all 0.3s ease;
+	display: flex;
+	align-items: center;
+	text-decoration: none;
+	color: var(--text-color);
+	transition: all 0.3s ease;
 }
 
 .github-button:hover {
-    color: white;
+	color: white;
 }
 
 .github-icon {
-    width: 20px;
-    height: 20px;
-    margin-right: 10px;
-    opacity: 0.9;
+	width: 20px;
+	height: 20px;
+	margin-right: 10px;
+	opacity: 0.9;
 }
 
 /* Статусные сообщения */
 .status-message {
-    margin-top: 10px;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 13px;
-    display: none;
-    animation: fadeIn 0.3s ease;
+	margin-top: 10px;
+	padding: 8px 12px;
+	border-radius: 6px;
+	font-size: 13px;
+	display: none;
+	animation: fadeIn 0.3s ease;
 }
 
 .status-message.success {
-    background: rgba(46, 125, 50, 0.3);
-    border: 1px solid rgba(46, 125, 50, 0.5);
-    display: block;
+	background: rgba(46, 125, 50, 0.3);
+	border: 1px solid rgba(46, 125, 50, 0.5);
+	display: block;
 }
 
 .status-message.error {
-    background: rgba(198, 40, 40, 0.3);
-    border: 1px solid rgba(198, 40, 40, 0.5);
-    display: block;
+	background: rgba(198, 40, 40, 0.3);
+	border: 1px solid rgba(198, 40, 40, 0.5);
+	display: block;
 }
 
 /* Анимации */
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-5px);
-    }
+	from {
+		opacity: 0;
+		transform: translateY(-5px);
+	}
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
 @keyframes fadeInScale {
-    from {
-        opacity: 0;
-        transform: scale(0.95);
-    }
+	from {
+		opacity: 0;
+		transform: scale(0.95);
+	}
 
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
 }
 
 /* Анимация раскрытия карточки поисковой системы */
 .search-engine-option {
-    transition: all 0.3s ease;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+	transition: all 0.3s ease;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
 }
 
 .search-engine-option.expanded {
-    padding-bottom: 12px;
+	padding-bottom: 12px;
 }
 
 .api-key-container {
-    max-height: 0;
-    opacity: 0;
-    transition: max-height 0.3s ease, opacity 0.3s ease;
-    overflow: hidden;
-    margin-left: 26px;
-    /* Отступ для выравнивания с текстом */
-    width: calc(100% - 26px);
+	max-height: 0;
+	opacity: 0;
+	transition: max-height 0.3s ease, opacity 0.3s ease;
+	overflow: hidden;
+	margin-left: 26px;
+	/* Отступ для выравнивания с текстом */
+	width: calc(100% - 26px);
 }
 
 .search-engine-option.expanded .api-key-container {
-    max-height: 100px;
-    opacity: 1;
-    margin-top: 8px;
+	max-height: 100px;
+	opacity: 1;
+	margin-top: 8px;
 }
 
 .api-key-input {
-    width: 100pt;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 6px;
-    padding: 8px 12px;
-    color: var(--text-color);
-    font-size: 13px;
-    outline: none;
-    transition: all 0.3s;
-    backdrop-filter: blur(5px);
+	width: 100pt;
+	background: rgba(255, 255, 255, 0.1);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	border-radius: 6px;
+	padding: 8px 12px;
+	color: var(--text-color);
+	font-size: 13px;
+	outline: none;
+	transition: all 0.3s;
+	backdrop-filter: blur(5px);
 }
 
 .api-key-input:focus {
-    border-color: var(--accent-color);
-    box-shadow: 0 0 0 2px rgba(68, 165, 97, 0.3);
+	border-color: var(--accent-color);
+	box-shadow: 0 0 0 2px rgba(68, 165, 97, 0.3);
 }
 
 .api-key-input::placeholder {
-    color: rgba(255, 255, 255, 0.5);
-    font-size: 12px;
+	color: rgba(255, 255, 255, 0.5);
+	font-size: 12px;
 }
 
 .api-key-link {
-    display: block;
-    font-size: 11px;
-    margin-top: 4px;
-    color: rgba(255, 255, 255, 0.6);
-    text-decoration: none;
+	display: block;
+	font-size: 11px;
+	margin-top: 4px;
+	color: rgba(255, 255, 255, 0.6);
+	text-decoration: none;
 }
 
 .api-key-link:hover {
-    color: #4a90e2;
+	color: #4a90e2;
+}
+
+.version-text {
+	font-size: 12px;
+	color: rgba(255, 255, 255, 0.4);
+	text-align: center;
 }

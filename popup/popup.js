@@ -1,233 +1,251 @@
 document.addEventListener('DOMContentLoaded', function () {
-    // Tab switching
-    const tabs = document.querySelectorAll('.tab-button');
-    tabs.forEach(tab => {
-        tab.addEventListener('click', () => {
-            tabs.forEach(t => t.classList.remove('active'));
-            tab.classList.add('active');
+	// Gets the extension version from the manifest
+	const versionElement = document.getElementById('extension-version');
 
-            document.querySelectorAll('.tab-content').forEach(content => {
-                content.classList.remove('active');
-            });
-            document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
-        });
-    });
+	// for chromium
+	if (chrome.runtime && chrome.runtime.getManifest) {
+		const manifest = chrome.runtime.getManifest();
+		versionElement.textContent = manifest.version;
+	}
+	// for Firefox
+	else if (browser && browser.runtime && browser.runtime.getManifest) {
+		const manifest = browser.runtime.getManifest();
+		versionElement.textContent = manifest.version;
+	}
+	// fallback
+	else {
+		versionElement.textContent = 'error';
+	}
 
-    // Main buttons
-    document.getElementById('eios-button')?.addEventListener('click', function () {
-        chrome.tabs.create({ url: 'https://edu.shspu.ru/my' });
-    });
+	// Tab switching
+	const tabs = document.querySelectorAll('.tab-button');
+	tabs.forEach(tab => {
+		tab.addEventListener('click', () => {
+			tabs.forEach(t => t.classList.remove('active'));
+			tab.classList.add('active');
 
-    document.getElementById('lms-button')?.addEventListener('click', function () {
-        chrome.tabs.create({ url: 'https://shgpu-lms.web.app' });
-    });
+			document.querySelectorAll('.tab-content').forEach(content => {
+				content.classList.remove('active');
+			});
+			document.getElementById(`${tab.dataset.tab}-tab`).classList.add('active');
+		});
+	});
 
-    // Theme selection
-    const themeOptions = document.querySelectorAll('.theme-option');
-    themeOptions.forEach(option => {
-        option.addEventListener('click', function () {
-            const theme = this.dataset.theme;
-            saveSettings({ theme });
-            applyTheme(theme);
+	// Main buttons
+	document.getElementById('eios-button')?.addEventListener('click', function () {
+		chrome.tabs.create({ url: 'https://edu.shspu.ru/my' });
+	});
 
-            themeOptions.forEach(opt => opt.classList.remove('active'));
-            this.classList.add('active');
-            enableSaveButton();
-        });
-    });
+	document.getElementById('lms-button')?.addEventListener('click', function () {
+		chrome.tabs.create({ url: 'https://shgpu-lms.web.app' });
+	});
 
-    // Search engine checkboxes
-    const searchCheckboxes = document.querySelectorAll('.search-checkbox');
-    searchCheckboxes.forEach(checkbox => {
-        checkbox.addEventListener('change', function () {
-            const searchEngines = Array.from(document.querySelectorAll('.search-checkbox:checked'))
-                .map(cb => cb.value);
-            saveSettings({ searchEngines });
-            toggleApiKeyFields(this);
-            enableSaveButton();
-        });
-    });
+	// Theme selection
+	const themeOptions = document.querySelectorAll('.theme-option');
+	themeOptions.forEach(option => {
+		option.addEventListener('click', function () {
+			const theme = this.dataset.theme;
+			saveSettings({ theme });
+			applyTheme(theme);
 
-    // Элементы автовхода
-    const usernameInput = document.getElementById('shgpu-username');
-    const passwordInput = document.getElementById('shgpu-password');
-    const autoLoginCheckbox = document.getElementById('auto-login');
-    const delayLoginCheckbox = document.getElementById('delay-login');
-    const saveSettingsButton = document.getElementById('save-settings');
-    const loginStatus = document.getElementById('login-status');
-    const saveText = document.getElementById('save-text');
-    const savedText = document.getElementById('saved-text');
+			themeOptions.forEach(opt => opt.classList.remove('active'));
+			this.classList.add('active');
+			enableSaveButton();
+		});
+	});
 
-    // Обработчики изменений для полей входа
-    if (usernameInput && passwordInput && autoLoginCheckbox && delayLoginCheckbox) {
-        [usernameInput, passwordInput].forEach(input => {
-            input.addEventListener('input', enableSaveButton);
-        });
+	// Search engine checkboxes
+	const searchCheckboxes = document.querySelectorAll('.search-checkbox');
+	searchCheckboxes.forEach(checkbox => {
+		checkbox.addEventListener('change', function () {
+			const searchEngines = Array.from(document.querySelectorAll('.search-checkbox:checked'))
+				.map(cb => cb.value);
+			saveSettings({ searchEngines });
+			toggleApiKeyFields(this);
+			enableSaveButton();
+		});
+	});
 
-        autoLoginCheckbox.addEventListener('change', enableSaveButton);
-        delayLoginCheckbox.addEventListener('change', enableSaveButton);
-    }
+	// Элементы автовхода
+	const usernameInput = document.getElementById('shgpu-username');
+	const passwordInput = document.getElementById('shgpu-password');
+	const autoLoginCheckbox = document.getElementById('auto-login');
+	const delayLoginCheckbox = document.getElementById('delay-login');
+	const saveSettingsButton = document.getElementById('save-settings');
+	const loginStatus = document.getElementById('login-status');
+	const saveText = document.getElementById('save-text');
+	const savedText = document.getElementById('saved-text');
 
-    // Обработчики изменения API ключей
-    const chatgptApiKeyInput = document.getElementById('chatgpt-api-key');
-    const geminiApiKeyInput = document.getElementById('gemini-api-key');
+	// Обработчики изменений для полей входа
+	if (usernameInput && passwordInput && autoLoginCheckbox && delayLoginCheckbox) {
+		[usernameInput, passwordInput].forEach(input => {
+			input.addEventListener('input', enableSaveButton);
+		});
 
-    if (chatgptApiKeyInput) {
-        chatgptApiKeyInput.addEventListener('input', enableSaveButton);
-    }
+		autoLoginCheckbox.addEventListener('change', enableSaveButton);
+		delayLoginCheckbox.addEventListener('change', enableSaveButton);
+	}
 
-    if (geminiApiKeyInput) {
-        geminiApiKeyInput.addEventListener('input', enableSaveButton);
-    }
+	// Обработчики изменения API ключей
+	const chatgptApiKeyInput = document.getElementById('chatgpt-api-key');
+	const geminiApiKeyInput = document.getElementById('gemini-api-key');
 
-    // Сохранение всех настроек
-    if (saveSettingsButton) {
-        saveSettingsButton.addEventListener('click', function () {
-            const settings = {
-                shgpuUsername: usernameInput?.value,
-                shgpuPassword: passwordInput?.value,
-                autoLogin: autoLoginCheckbox?.checked,
-                delayLogin: delayLoginCheckbox?.checked,
-                chatgptApiKey: chatgptApiKeyInput?.value,
-                geminiApiKey: geminiApiKeyInput?.value,
-                searchEngines: Array.from(document.querySelectorAll('.search-checkbox:checked'))
-                    .map(cb => cb.value),
-                theme: document.querySelector('.theme-option.active')?.dataset.theme
-            };
+	if (chatgptApiKeyInput) {
+		chatgptApiKeyInput.addEventListener('input', enableSaveButton);
+	}
 
-            saveSettings(settings, showSaveConfirmation);
-        });
-    }
+	if (geminiApiKeyInput) {
+		geminiApiKeyInput.addEventListener('input', enableSaveButton);
+	}
 
-    // Загрузка сохраненных данных
-    chrome.storage.sync.get([
-        'theme',
-        'accentColor',
-        'searchEngines',
-        'shgpuUsername',
-        'shgpuPassword',
-        'autoLogin',
-        'delayLogin',
-        'chatgptApiKey',
-        'geminiApiKey'
-    ], function (data) {
-        // Theme
-        if (data.theme) {
-            applyTheme(data.theme);
-            document.querySelector(`.theme-option[data-theme="${data.theme}"]`)?.classList.add('active');
-        }
+	// Сохранение всех настроек
+	if (saveSettingsButton) {
+		saveSettingsButton.addEventListener('click', function () {
+			const settings = {
+				shgpuUsername: usernameInput?.value,
+				shgpuPassword: passwordInput?.value,
+				autoLogin: autoLoginCheckbox?.checked,
+				delayLogin: delayLoginCheckbox?.checked,
+				chatgptApiKey: chatgptApiKeyInput?.value,
+				geminiApiKey: geminiApiKeyInput?.value,
+				searchEngines: Array.from(document.querySelectorAll('.search-checkbox:checked'))
+					.map(cb => cb.value),
+				theme: document.querySelector('.theme-option.active')?.dataset.theme
+			};
 
-        // Search engines
-        if (data.searchEngines) {
-            searchCheckboxes.forEach(checkbox => {
-                checkbox.checked = data.searchEngines.includes(checkbox.value);
-                if (checkbox.checked && (checkbox.value === 'chatgpt' || checkbox.value === 'gemini')) {
-                    toggleApiKeyFields(checkbox, true);
-                }
-            });
-        }
+			saveSettings(settings, showSaveConfirmation);
+		});
+	}
 
-        // Auto login
-        if (data.shgpuUsername && usernameInput) usernameInput.value = data.shgpuUsername;
-        if (data.shgpuPassword && passwordInput) passwordInput.value = data.shgpuPassword;
-        if (data.autoLogin && autoLoginCheckbox) autoLoginCheckbox.checked = data.autoLogin;
-        if (data.delayLogin && delayLoginCheckbox) delayLoginCheckbox.checked = data.delayLogin;
+	// Загрузка сохраненных данных
+	chrome.storage.sync.get([
+		'theme',
+		'accentColor',
+		'searchEngines',
+		'shgpuUsername',
+		'shgpuPassword',
+		'autoLogin',
+		'delayLogin',
+		'chatgptApiKey',
+		'geminiApiKey'
+	], function (data) {
+		// Theme
+		if (data.theme) {
+			applyTheme(data.theme);
+			document.querySelector(`.theme-option[data-theme="${data.theme}"]`)?.classList.add('active');
+		}
 
-        // API ключи
-        if (data.chatgptApiKey && chatgptApiKeyInput) chatgptApiKeyInput.value = data.chatgptApiKey;
-        if (data.geminiApiKey && geminiApiKeyInput) geminiApiKeyInput.value = data.geminiApiKey;
-    });
+		// Search engines
+		if (data.searchEngines) {
+			searchCheckboxes.forEach(checkbox => {
+				checkbox.checked = data.searchEngines.includes(checkbox.value);
+				if (checkbox.checked && (checkbox.value === 'chatgpt' || checkbox.value === 'gemini')) {
+					toggleApiKeyFields(checkbox, true);
+				}
+			});
+		}
 
-    // Функция включения кнопки сохранения
-    function enableSaveButton() {
-        if (saveSettingsButton) {
-            saveSettingsButton.disabled = false;
-        }
-    }
+		// Auto login
+		if (data.shgpuUsername && usernameInput) usernameInput.value = data.shgpuUsername;
+		if (data.shgpuPassword && passwordInput) passwordInput.value = data.shgpuPassword;
+		if (data.autoLogin && autoLoginCheckbox) autoLoginCheckbox.checked = data.autoLogin;
+		if (data.delayLogin && delayLoginCheckbox) delayLoginCheckbox.checked = data.delayLogin;
 
-    // Apply theme function
-    function applyTheme(theme) {
-        if (theme === 'system') {
-            // Проверяем системные настройки
-            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                document.body.classList.add('dark-theme');
-            } else {
-                document.body.classList.remove('dark-theme');
-            }
-        } else if (theme === 'dark') {
-            document.body.classList.add('dark-theme');
-        } else {
-            document.body.classList.remove('dark-theme');
-        }
-    }
+		// API ключи
+		if (data.chatgptApiKey && chatgptApiKeyInput) chatgptApiKeyInput.value = data.chatgptApiKey;
+		if (data.geminiApiKey && geminiApiKeyInput) geminiApiKeyInput.value = data.geminiApiKey;
+	});
 
-    // Функция показа статуса
-    function showLoginStatus(message, type) {
-        if (!loginStatus) return;
+	// Функция включения кнопки сохранения
+	function enableSaveButton() {
+		if (saveSettingsButton) {
+			saveSettingsButton.disabled = false;
+		}
+	}
 
-        loginStatus.textContent = message;
-        loginStatus.className = 'status-message ' + type;
-        loginStatus.style.display = 'block';
+	// Apply theme function
+	function applyTheme(theme) {
+		if (theme === 'system') {
+			// Проверяем системные настройки
+			if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+				document.body.classList.add('dark-theme');
+			} else {
+				document.body.classList.remove('dark-theme');
+			}
+		} else if (theme === 'dark') {
+			document.body.classList.add('dark-theme');
+		} else {
+			document.body.classList.remove('dark-theme');
+		}
+	}
 
-        setTimeout(() => {
-            loginStatus.style.display = 'none';
-        }, 3000);
-    }
+	// Функция показа статуса
+	function showLoginStatus(message, type) {
+		if (!loginStatus) return;
 
-    // Обработчик изменения системной темы
-    if (window.matchMedia) {
-        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-            chrome.storage.sync.get(['theme'], function (data) {
-                if (data.theme === 'system') {
-                    applyTheme('system');
-                }
-            });
-        });
-    }
+		loginStatus.textContent = message;
+		loginStatus.className = 'status-message ' + type;
+		loginStatus.style.display = 'block';
 
-    // Функция для переключения полей API ключей
-    function toggleApiKeyFields(checkbox, init = false) {
-        const optionId = checkbox.value + '-option';
-        const parentOption = document.getElementById(optionId);
+		setTimeout(() => {
+			loginStatus.style.display = 'none';
+		}, 3000);
+	}
 
-        if (checkbox.value === 'chatgpt' || checkbox.value === 'gemini') {
-            if (checkbox.checked) {
-                parentOption.classList.add('expanded');
-            } else {
-                parentOption.classList.remove('expanded');
-            }
+	// Обработчик изменения системной темы
+	if (window.matchMedia) {
+		window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+			chrome.storage.sync.get(['theme'], function (data) {
+				if (data.theme === 'system') {
+					applyTheme('system');
+				}
+			});
+		});
+	}
 
-            if (!init) {
-                const apiKeyInput = parentOption.querySelector('.api-key-input');
-                if (apiKeyInput) {
-                    saveSettings({ [checkbox.value + 'ApiKey']: checkbox.checked ? apiKeyInput.value : '' });
-                }
-            }
-        }
-    }
+	// Функция для переключения полей API ключей
+	function toggleApiKeyFields(checkbox, init = false) {
+		const optionId = checkbox.value + '-option';
+		const parentOption = document.getElementById(optionId);
 
-    // Универсальная функция сохранения настроек
-    function saveSettings(settings, callback) {
-        chrome.storage.sync.set(settings, function () {
-            if (typeof callback === 'function') {
-                callback();
-            }
-        });
-    }
+		if (checkbox.value === 'chatgpt' || checkbox.value === 'gemini') {
+			if (checkbox.checked) {
+				parentOption.classList.add('expanded');
+			} else {
+				parentOption.classList.remove('expanded');
+			}
 
-    // Функция показа подтверждения сохранения
-    function showSaveConfirmation() {
-        if (!saveSettingsButton) return;
+			if (!init) {
+				const apiKeyInput = parentOption.querySelector('.api-key-input');
+				if (apiKeyInput) {
+					saveSettings({ [checkbox.value + 'ApiKey']: checkbox.checked ? apiKeyInput.value : '' });
+				}
+			}
+		}
+	}
 
-        saveSettingsButton.classList.add('saved');
-        setTimeout(() => {
-            saveSettingsButton.classList.remove('saved');
-        }, 2000);
-        saveSettingsButton.disabled = true;
+	// Универсальная функция сохранения настроек
+	function saveSettings(settings, callback) {
+		chrome.storage.sync.set(settings, function () {
+			if (typeof callback === 'function') {
+				callback();
+			}
+		});
+	}
 
-        setTimeout(() => {
-            if (saveText) saveText.style.display = 'inline';
-            if (savedText) savedText.style.display = 'none';
-        }, 2000);
-    }
+	// Функция показа подтверждения сохранения
+	function showSaveConfirmation() {
+		if (!saveSettingsButton) return;
+
+		saveSettingsButton.classList.add('saved');
+		setTimeout(() => {
+			saveSettingsButton.classList.remove('saved');
+		}, 2000);
+		saveSettingsButton.disabled = true;
+
+		setTimeout(() => {
+			if (saveText) saveText.style.display = 'inline';
+			if (savedText) savedText.style.display = 'none';
+		}, 2000);
+	}
 });
