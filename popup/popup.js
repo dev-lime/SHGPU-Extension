@@ -87,8 +87,8 @@ document.addEventListener('DOMContentLoaded', function () {
 	}
 
 	// Обработчики изменения API ключей
-	const chatgptApiKeyInput = document.getElementById('chatgpt-api-key');
-	const geminiApiKeyInput = document.getElementById('gemini-api-key');
+	const chatgptApiKeyInput = document.querySelector('#chatgpt-option .api-key-input');
+	const geminiApiKeyInput = document.querySelector('#gemini-option .api-key-input');
 
 	if (chatgptApiKeyInput) {
 		chatgptApiKeyInput.addEventListener('input', enableSaveButton);
@@ -101,59 +101,59 @@ document.addEventListener('DOMContentLoaded', function () {
 	// Сохранение всех настроек
 	if (saveSettingsButton) {
 		saveSettingsButton.addEventListener('click', function () {
-			const settings = {
+			const syncSettings = {
+				searchEngines: Array.from(document.querySelectorAll('.search-checkbox:checked'))
+					.map(cb => cb.value),
+				theme: document.querySelector('.theme-option.active')?.dataset.theme
+			};
+			const localSettings = {
 				shgpuUsername: usernameInput?.value,
 				shgpuPassword: passwordInput?.value,
 				autoLogin: autoLoginCheckbox?.checked,
 				delayLogin: delayLoginCheckbox?.checked,
 				chatgptApiKey: chatgptApiKeyInput?.value,
-				geminiApiKey: geminiApiKeyInput?.value,
-				searchEngines: Array.from(document.querySelectorAll('.search-checkbox:checked'))
-					.map(cb => cb.value),
-				theme: document.querySelector('.theme-option.active')?.dataset.theme
+				geminiApiKey: geminiApiKeyInput?.value
 			};
 
-			saveSettings(settings, showSaveConfirmation);
+			chrome.storage.sync.set(syncSettings);
+			chrome.storage.local.set(localSettings, showSaveConfirmation);
 		});
 	}
 
 	// Загрузка сохраненных данных
-	chrome.storage.sync.get([
-		'theme',
-		'accentColor',
-		'searchEngines',
+	chrome.storage.sync.get(['theme', 'accentColor', 'searchEngines'], function (syncData) {
+		if (syncData.theme) {
+			applyTheme(syncData.theme);
+			document.querySelector(`.theme-option[data-theme="${syncData.theme}"]`)?.classList.add('active');
+		}
+
+		const engines = syncData.searchEngines || ['google'];
+		if (!syncData.searchEngines) {
+			chrome.storage.sync.set({ searchEngines: engines });
+		}
+		searchCheckboxes.forEach(checkbox => {
+			checkbox.checked = engines.includes(checkbox.value);
+			if (checkbox.checked && (checkbox.value === 'chatgpt' || checkbox.value === 'gemini')) {
+				toggleApiKeyFields(checkbox, true);
+			}
+		});
+	});
+
+	chrome.storage.local.get([
 		'shgpuUsername',
 		'shgpuPassword',
 		'autoLogin',
 		'delayLogin',
 		'chatgptApiKey',
 		'geminiApiKey'
-	], function (data) {
-		// Theme
-		if (data.theme) {
-			applyTheme(data.theme);
-			document.querySelector(`.theme-option[data-theme="${data.theme}"]`)?.classList.add('active');
-		}
+	], function (localData) {
+		if (localData.shgpuUsername && usernameInput) usernameInput.value = localData.shgpuUsername;
+		if (localData.shgpuPassword && passwordInput) passwordInput.value = localData.shgpuPassword;
+		if (localData.autoLogin && autoLoginCheckbox) autoLoginCheckbox.checked = localData.autoLogin;
+		if (localData.delayLogin && delayLoginCheckbox) delayLoginCheckbox.checked = localData.delayLogin;
 
-		// Search engines
-		if (data.searchEngines) {
-			searchCheckboxes.forEach(checkbox => {
-				checkbox.checked = data.searchEngines.includes(checkbox.value);
-				if (checkbox.checked && (checkbox.value === 'chatgpt' || checkbox.value === 'gemini')) {
-					toggleApiKeyFields(checkbox, true);
-				}
-			});
-		}
-
-		// Auto login
-		if (data.shgpuUsername && usernameInput) usernameInput.value = data.shgpuUsername;
-		if (data.shgpuPassword && passwordInput) passwordInput.value = data.shgpuPassword;
-		if (data.autoLogin && autoLoginCheckbox) autoLoginCheckbox.checked = data.autoLogin;
-		if (data.delayLogin && delayLoginCheckbox) delayLoginCheckbox.checked = data.delayLogin;
-
-		// API ключи
-		if (data.chatgptApiKey && chatgptApiKeyInput) chatgptApiKeyInput.value = data.chatgptApiKey;
-		if (data.geminiApiKey && geminiApiKeyInput) geminiApiKeyInput.value = data.geminiApiKey;
+		if (localData.chatgptApiKey && chatgptApiKeyInput) chatgptApiKeyInput.value = localData.chatgptApiKey;
+		if (localData.geminiApiKey && geminiApiKeyInput) geminiApiKeyInput.value = localData.geminiApiKey;
 	});
 
 	// Функция включения кнопки сохранения
@@ -227,13 +227,13 @@ document.addEventListener('DOMContentLoaded', function () {
 			if (!init) {
 				const apiKeyInput = parentOption.querySelector('.api-key-input');
 				if (apiKeyInput) {
-					saveSettings({ [checkbox.value + 'ApiKey']: checkbox.checked ? apiKeyInput.value : '' });
+					chrome.storage.local.set({ [checkbox.value + 'ApiKey']: checkbox.checked ? apiKeyInput.value : '' });
 				}
 			}
 		}
 	}
 
-	// Универсальная функция сохранения настроек
+	// Сохранение UI-настроек (тема, поисковые движки) в sync
 	function saveSettings(settings, callback) {
 		chrome.storage.sync.set(settings, function () {
 			if (typeof callback === 'function') {

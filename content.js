@@ -511,7 +511,11 @@ function createAIModal(questionText, engine) {
 	questionPreview.style.padding = '16px';
 	questionPreview.style.borderBottom = '1px solid #eee';
 	questionPreview.style.backgroundColor = '#f9f9f9';
-	questionPreview.innerHTML = `<strong>Вопрос:</strong><br>${questionText.split('\n')[0]}`;
+	const strong = document.createElement('strong');
+	strong.textContent = 'Вопрос:';
+	questionPreview.appendChild(strong);
+	questionPreview.appendChild(document.createElement('br'));
+	questionPreview.appendChild(document.createTextNode(questionText.split('\n')[0]));
 
 	const contentArea = document.createElement('div');
 	contentArea.style.flex = '1';
@@ -561,7 +565,7 @@ async function showAIResponse(questionText, container, engine) {
 
 	try {
 		const data = await new Promise(resolve => {
-			chrome.storage.sync.get([`${engine}ApiKey`], resolve);
+			chrome.storage.local.get([`${engine}ApiKey`], resolve);
 		});
 
 		const apiKey = data[`${engine}ApiKey`];
@@ -592,35 +596,38 @@ async function showAIResponse(questionText, container, engine) {
 	}
 }
 
-function addSearch() {
+async function addSearch() {
 	const questions = document.querySelectorAll('.que.multichoice, .que.truefalse, .que.shortanswer, .que.essay');
 
-	chrome.storage.sync.get(['searchEngines', 'chatgptApiKey', 'geminiApiKey'], function (data) {
-		let enabledEngines = data.searchEngines || ['google', 'yandex'];
+	const [syncData, localData] = await Promise.all([
+		new Promise(r => chrome.storage.sync.get(['searchEngines'], r)),
+		new Promise(r => chrome.storage.local.get(['chatgptApiKey', 'geminiApiKey'], r))
+	]);
+	const data = { ...syncData, ...localData };
+	let enabledEngines = data.searchEngines || ['google'];
 
-		// Проверяем наличие API ключей для нейросетей
-		if (enabledEngines.includes('chatgpt') && !data.chatgptApiKey) {
-			enabledEngines = enabledEngines.filter(engine => engine !== 'chatgpt');
-		}
-		if (enabledEngines.includes('gemini') && !data.geminiApiKey) {
-			enabledEngines = enabledEngines.filter(engine => engine !== 'gemini');
-		}
+	if (enabledEngines.includes('chatgpt') && !data.chatgptApiKey) {
+		enabledEngines = enabledEngines.filter(engine => engine !== 'chatgpt');
+	}
+	if (enabledEngines.includes('gemini') && !data.geminiApiKey) {
+		enabledEngines = enabledEngines.filter(engine => engine !== 'gemini');
+	}
 
-		questions.forEach(question => {
-			const existingButtons = question.querySelectorAll('.search-buttons-container');
-			existingButtons.forEach(container => container.remove());
+	questions.forEach(question => {
+		const existingButtons = question.querySelectorAll('.search-buttons-container');
+		existingButtons.forEach(container => container.remove());
 
-			const questionText = getFullQuestionText(question);
-			const buttonsContainer = document.createElement('div');
-			buttonsContainer.className = 'search-buttons-container';
-			buttonsContainer.style.margin = '15px 0';
-			buttonsContainer.style.display = 'flex';
-			buttonsContainer.style.gap = '10px';
-			buttonsContainer.style.alignItems = 'center';
-			buttonsContainer.style.flexWrap = 'wrap';
+		const questionText = getFullQuestionText(question);
+		const buttonsContainer = document.createElement('div');
+		buttonsContainer.className = 'search-buttons-container';
+		buttonsContainer.style.margin = '15px 0';
+		buttonsContainer.style.display = 'flex';
+		buttonsContainer.style.gap = '10px';
+		buttonsContainer.style.alignItems = 'center';
+		buttonsContainer.style.flexWrap = 'wrap';
 
-			// Стили для кнопок
-			const baseButtonStyle = `
+		// Стили для кнопок
+		const baseButtonStyle = `
                 padding: 8px 16px;
                 border-radius: 8px;
                 font-size: 14px;
@@ -634,59 +641,58 @@ function addSearch() {
                 gap: 6px;
             `;
 
-			const hoverStyle = `
+		const hoverStyle = `
                 transform: translateY(-1px);
                 box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
             `;
 
-			// Создаем кнопки
-			if (enabledEngines.includes('chatgpt')) {
-				const chatGPTButton = createSearchButton(
-					'ChatGPT',
-					baseButtonStyle,
-					hoverStyle,
-					() => createAIModal(questionText, 'chatgpt')
-				);
-				buttonsContainer.appendChild(chatGPTButton);
-			}
+		// Создаем кнопки
+		if (enabledEngines.includes('chatgpt')) {
+			const chatGPTButton = createSearchButton(
+				'ChatGPT',
+				baseButtonStyle,
+				hoverStyle,
+				() => createAIModal(questionText, 'chatgpt')
+			);
+			buttonsContainer.appendChild(chatGPTButton);
+		}
 
-			if (enabledEngines.includes('gemini')) {
-				const geminiButton = createSearchButton(
-					'Gemini',
-					baseButtonStyle,
-					hoverStyle,
-					() => createAIModal(questionText, 'gemini')
-				);
-				buttonsContainer.appendChild(geminiButton);
-			}
+		if (enabledEngines.includes('gemini')) {
+			const geminiButton = createSearchButton(
+				'Gemini',
+				baseButtonStyle,
+				hoverStyle,
+				() => createAIModal(questionText, 'gemini')
+			);
+			buttonsContainer.appendChild(geminiButton);
+		}
 
-			if (enabledEngines.includes('google')) {
-				const googleButton = createSearchButton(
-					'Google',
-					baseButtonStyle,
-					hoverStyle,
-					() => window.open(`https://www.google.com/search?q=${encodeURIComponent(questionText)}`, '_blank')
-				);
-				buttonsContainer.appendChild(googleButton);
-			}
+		if (enabledEngines.includes('google')) {
+			const googleButton = createSearchButton(
+				'G',
+				baseButtonStyle,
+				hoverStyle,
+				() => window.open(`https://www.google.com/search?q=${encodeURIComponent(questionText)}`, '_blank')
+			);
+			buttonsContainer.appendChild(googleButton);
+		}
 
-			if (enabledEngines.includes('yandex')) {
-				const yandexButton = createSearchButton(
-					'Яндекс',
-					baseButtonStyle,
-					hoverStyle,
-					() => window.open(`https://yandex.ru/search/?text=${encodeURIComponent(questionText)}`, '_blank')
-				);
-				buttonsContainer.appendChild(yandexButton);
-			}
+		if (enabledEngines.includes('yandex')) {
+			const yandexButton = createSearchButton(
+				'Я',
+				baseButtonStyle,
+				hoverStyle,
+				() => window.open(`https://yandex.ru/search/?text=${encodeURIComponent(questionText)}`, '_blank')
+			);
+			buttonsContainer.appendChild(yandexButton);
+		}
 
-			const questionContent = question.querySelector('.content');
-			if (questionContent && buttonsContainer.children.length > 0) {
-				questionContent.appendChild(buttonsContainer);
-			}
-		});
+		const questionContent = question.querySelector('.content');
+		if (questionContent && buttonsContainer.children.length > 0) {
+			questionContent.appendChild(buttonsContainer);
+		}
 	});
-}
+};
 
 // Вспомогательная функция для создания кнопок
 function createSearchButton(text, style, hoverStyle, onClick) {
@@ -710,17 +716,11 @@ function createSearchButton(text, style, hoverStyle, onClick) {
 	return button;
 }
 
-// Слушаем изменения в хранилище
-chrome.storage.onChanged.addListener(function (changes, namespace) {
-	if (changes.searchEngines) {
-		// Пересоздаем кнопки поиска при изменении настроек
-		addSearch();
-	}
-});
+
 
 // Если сейчас страница входа ШГПУ
 if (window.location.href.includes('edu.shspu.ru/login/index.php')) {
-	chrome.storage.sync.get(['shgpuUsername', 'shgpuPassword', 'autoLogin'], function (data) {
+	chrome.storage.local.get(['shgpuUsername', 'shgpuPassword', 'autoLogin'], function (data) {
 		const username = data.shgpuUsername;
 		const password = data.shgpuPassword;
 		const autoLogin = data.autoLogin || false;
@@ -880,8 +880,18 @@ if (window.matchMedia) {
 
 // Слушает изменения настроек расширения
 chrome.storage.onChanged.addListener(function (changes, namespace) {
-	if (namespace === 'sync' && changes.theme) {
-		applyTheme();
+	if (namespace === 'sync') {
+		if (changes.theme) {
+			applyTheme();
+		}
+		if (changes.searchEngines) {
+			addSearch();
+		}
+	}
+	if (namespace === 'local') {
+		if (changes.chatgptApiKey || changes.geminiApiKey) {
+			addSearch();
+		}
 	}
 });
 
@@ -893,6 +903,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 });
 
 function init() {
+	applyTheme();
 	rebuildHeader();
 	replaceText();
 	removeNavItems();

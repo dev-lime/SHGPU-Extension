@@ -42,10 +42,6 @@ body {
 	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
 }
 
-#page-content {
-	background: linear-gradient(135deg, #44a561 0%, #186910 100%) !important;
-}
-
 #region-main,
 #region-main-box,
 .card-body {
