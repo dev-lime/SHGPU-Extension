@@ -1,3 +1,10 @@
+// Анти-flash: применяем тему до рендера страницы
+(function() {
+	if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+		document.documentElement.setAttribute('data-theme-dark', '');
+	}
+})();
+
 // Конфигурация
 const CONFIG = {
 	DEBUG: false,
@@ -19,6 +26,8 @@ const CONFIG = {
 
 // Утилиты
 const log = (...args) => CONFIG.DEBUG && console.log(...args);
+const isDarkTheme = () => document.documentElement.hasAttribute('data-theme-dark');
+const cssVar = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 
 function removeNavItems() {
 	const navItems = document.querySelectorAll('.nav-item');
@@ -311,7 +320,6 @@ function rebuildHeader() {
 			.quick-access-cards {
 				display: flex;
 				gap: 15px;
-				max-flex-grow: 1;
 			}
 
 			.access-card,
@@ -331,7 +339,6 @@ function rebuildHeader() {
 				transition: all 0.3s ease;
 				border: 1px solid rgba(255, 255, 255, 0.1);
 				cursor: pointer;
-				border: none;
 				font-family: inherit;
 				font-size: inherit;
 			}
@@ -356,6 +363,15 @@ function rebuildHeader() {
 
 			.access-card-form {
 				display: contents;
+			}
+
+			html[data-theme-dark] .access-card {
+				background: rgba(0, 0, 0, 0.3);
+				border-color: rgba(255, 255, 255, 0.05);
+			}
+
+			html[data-theme-dark] .access-card:hover {
+				background: rgba(0, 0, 0, 0.45);
 			}
 		</style>
 	`;
@@ -446,6 +462,7 @@ async function queryGemini(questionText, apiKey) {
 
 // Модальное окно с выбором AI
 function createAIModal(questionText, engine) {
+	const dark = isDarkTheme();
 	const overlay = document.createElement('div');
 	overlay.style.position = 'fixed';
 	overlay.style.top = '0';
@@ -468,7 +485,7 @@ function createAIModal(questionText, engine) {
 	modal.style.width = '80%';
 	modal.style.maxWidth = '900px';
 	modal.style.height = '80%';
-	modal.style.backgroundColor = 'white';
+	modal.style.backgroundColor = cssVar('--bg-modal');
 	modal.style.borderRadius = '8px';
 	modal.style.boxShadow = '0 4px 20px rgba(0,0,0,0.2)';
 	modal.style.display = 'flex';
@@ -477,7 +494,7 @@ function createAIModal(questionText, engine) {
 
 	const header = document.createElement('div');
 	header.style.padding = '16px';
-	header.style.borderBottom = '1px solid #eee';
+	header.style.borderBottom = '1px solid ' + cssVar('--border-color');
 	header.style.display = 'flex';
 	header.style.justifyContent = 'space-between';
 	header.style.alignItems = 'center';
@@ -486,6 +503,7 @@ function createAIModal(questionText, engine) {
 	title.textContent = `Поиск ответа с помощью ${engine === 'gemini' ? 'Google Gemini' : 'ChatGPT'}`;
 	title.style.margin = '0';
 	title.style.fontSize = '18px';
+	title.style.color = cssVar('--text-accent');
 
 	const closeButton = document.createElement('button');
 	closeButton.textContent = '×';
@@ -494,6 +512,7 @@ function createAIModal(questionText, engine) {
 	closeButton.style.fontSize = '24px';
 	closeButton.style.cursor = 'pointer';
 	closeButton.style.padding = '0 10px';
+	closeButton.style.color = cssVar('--text-primary');
 	closeButton.addEventListener('click', () => {
 		document.body.removeChild(overlay);
 	});
@@ -509,9 +528,11 @@ function createAIModal(questionText, engine) {
 
 	const questionPreview = document.createElement('div');
 	questionPreview.style.padding = '16px';
-	questionPreview.style.borderBottom = '1px solid #eee';
-	questionPreview.style.backgroundColor = '#f9f9f9';
+	questionPreview.style.borderBottom = '1px solid ' + cssVar('--border-color');
+	questionPreview.style.backgroundColor = cssVar('--bg-block');
+	questionPreview.style.color = cssVar('--text-primary');
 	const strong = document.createElement('strong');
+	strong.style.color = cssVar('--text-accent');
 	strong.textContent = 'Вопрос:';
 	questionPreview.appendChild(strong);
 	questionPreview.appendChild(document.createElement('br'));
@@ -521,6 +542,7 @@ function createAIModal(questionText, engine) {
 	contentArea.style.flex = '1';
 	contentArea.style.overflow = 'auto';
 	contentArea.style.padding = '16px';
+	contentArea.style.color = cssVar('--text-primary');
 
 	modal.appendChild(header);
 	modal.appendChild(questionPreview);
@@ -535,9 +557,9 @@ function createAIModal(questionText, engine) {
 async function showAIResponse(questionText, container, engine) {
 	container.innerHTML = `
         <div style="display: flex; flex-direction: column; gap: 16px;">
-            <div style="background: #f5f5f5; padding: 16px; border-radius: 6px;">
-                <h4 style="margin-top: 0; color: #333;">Ответ ${engine === 'gemini' ? 'Gemini' : 'ChatGPT'}:</h4>
-                <div id="ai-response" style="line-height: 1.5;">
+            <div style="background: ${cssVar('--bg-card')}; padding: 16px; border-radius: 6px; border: 1px solid ${cssVar('--border-color')};">
+                <h4 style="margin-top: 0; color: ${cssVar('--text-accent')};">Ответ ${engine === 'gemini' ? 'Gemini' : 'ChatGPT'}:</h4>
+                <div id="ai-response" style="line-height: 1.5; color: ${cssVar('--text-primary')};">
                     <div style="display: flex; justify-content: center; padding: 20px;">
                         <div class="spinner"></div>
                     </div>
@@ -551,7 +573,7 @@ async function showAIResponse(questionText, container, engine) {
         .spinner {
             width: 40px;
             height: 40px;
-            border: 4px solid #f3f3f3;
+            border: 4px solid ${isDarkTheme() ? 'rgba(255,255,255,0.15)' : '#f3f3f3'};
             border-top: 4px solid ${engine === 'gemini' ? '#4285F4' : '#10a37f'};
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -570,10 +592,15 @@ async function showAIResponse(questionText, container, engine) {
 
 		const apiKey = data[`${engine}ApiKey`];
 		if (!apiKey) {
-			document.getElementById('ai-response').innerHTML = `
-                <p style="color: #d32f2f;">API ключ для ${engine === 'gemini' ? 'Gemini' : 'ChatGPT'} не найден.</p>
-                <p>Пожалуйста, введите ваш ${engine === 'gemini' ? 'Google Gemini' : 'OpenAI'} API ключ в настройках расширения.</p>
-            `;
+			const container = document.getElementById('ai-response');
+			container.innerHTML = '';
+			const p1 = document.createElement('p');
+			p1.style.color = '#e74c3c';
+			p1.textContent = `API ключ для ${engine === 'gemini' ? 'Gemini' : 'ChatGPT'} не найден.`;
+			container.appendChild(p1);
+			const p2 = document.createElement('p');
+			p2.textContent = `Пожалуйста, введите ваш ${engine === 'gemini' ? 'Google Gemini' : 'OpenAI'} API ключ в настройках расширения.`;
+			container.appendChild(p2);
 			return;
 		}
 
@@ -581,18 +608,33 @@ async function showAIResponse(questionText, container, engine) {
 			? await queryGemini(questionText, apiKey)
 			: await queryChatGPT(questionText, apiKey);
 
-		document.getElementById('ai-response').innerHTML = `
-            <div style="white-space: pre-wrap;">${response}</div>
-            <div style="margin-top: 20px; font-size: 12px; color: #666; border-top: 1px solid #eee; padding-top: 10px;">
-                Ответ сгенерирован с помощью ${engine === 'gemini' ? 'Google Gemini API' : 'OpenAI API'}. Только для справочных целей.
-            </div>
-        `;
+		const resContainer = document.getElementById('ai-response');
+		resContainer.innerHTML = '';
+		const responseDiv = document.createElement('div');
+		responseDiv.style.whiteSpace = 'pre-wrap';
+		responseDiv.textContent = response;
+		resContainer.appendChild(responseDiv);
+		const footer = document.createElement('div');
+		footer.style.marginTop = '20px';
+		footer.style.fontSize = '12px';
+		footer.style.color = cssVar('--text-secondary');
+		footer.style.borderTop = '1px solid ' + cssVar('--border-color');
+		footer.style.paddingTop = '10px';
+		footer.textContent = `Ответ сгенерирован с помощью ${engine === 'gemini' ? 'Google Gemini API' : 'OpenAI API'}. Только для справочных целей.`;
+		resContainer.appendChild(footer);
 	} catch (error) {
-		document.getElementById('ai-response').innerHTML = `
-            <p style="color: #d32f2f;">Ошибка при запросе к ${engine === 'gemini' ? 'Gemini' : 'ChatGPT'}:</p>
-            <p>${error.message}</p>
-            <p>Проверьте ваш API ключ и подключение к интернету.</p>
-        `;
+		const container = document.getElementById('ai-response');
+		container.innerHTML = '';
+		const p1 = document.createElement('p');
+		p1.style.color = '#e74c3c';
+		p1.textContent = `Ошибка при запросе к ${engine === 'gemini' ? 'Gemini' : 'ChatGPT'}:`;
+		container.appendChild(p1);
+		const p2 = document.createElement('p');
+		p2.textContent = error.message;
+		container.appendChild(p2);
+		const p3 = document.createElement('p');
+		p3.textContent = 'Проверьте ваш API ключ и подключение к интернету.';
+		container.appendChild(p3);
 	}
 }
 
@@ -807,37 +849,44 @@ function makeCardsClickable() {
 	});
 }
 
-// Запускает при загрузке страницы
-document.addEventListener('DOMContentLoaded', makeCardsClickable);
-
 // Отслеживает динамические изменения (для Ajax-подгрузки)
-const observer = new MutationObserver(function (mutations) {
-	mutations.forEach(function (mutation) {
-		if (mutation.addedNodes.length) {
-			makeCardsClickable();
-		}
+function setupObserver() {
+	const observer = new MutationObserver(function (mutations) {
+		mutations.forEach(function (mutation) {
+			if (mutation.addedNodes.length) {
+				makeCardsClickable();
+			}
+		});
 	});
-});
 
-observer.observe(document.body, {
-	childList: true,
-	subtree: true
-});
+	observer.observe(document.body, {
+		childList: true,
+		subtree: true
+	});
+}
+
+if (document.readyState === 'loading') {
+	document.addEventListener('DOMContentLoaded', function() {
+		makeCardsClickable();
+		setupObserver();
+	});
+} else {
+	makeCardsClickable();
+	setupObserver();
+}
 
 // Функция применения темы
 function applyTheme() {
-	// Получает настройки темы из storage
 	chrome.storage.sync.get(['theme'], function (data) {
 		const theme = data.theme || 'light';
 		const isDark = shouldApplyDarkTheme(theme);
 
 		if (isDark) {
-			document.body.classList.add('dark-theme');
+			document.documentElement.setAttribute('data-theme-dark', '');
 		} else {
-			document.body.classList.remove('dark-theme');
+			document.documentElement.removeAttribute('data-theme-dark');
 		}
 
-		// Применяет дополнительные стили для темной темы
 		applyDarkThemeStyles(isDark);
 	});
 }
@@ -912,4 +961,8 @@ function init() {
 	addSearch();
 }
 
-init();
+if (document.readyState === 'loading') {
+	document.addEventListener('DOMContentLoaded', init);
+} else {
+	init();
+}
